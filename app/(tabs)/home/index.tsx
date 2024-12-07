@@ -15,6 +15,9 @@ import {
   Settings,
   ArrowDownUp,
 } from "lucide-react-native";
+
+import Slider from "@react-native-community/slider";
+
 import { FlatList } from "react-native";
 import { GroupCard } from "~/components/group-card";
 import { Header } from "~/components/Header";
@@ -52,6 +55,7 @@ export default function HomeScreen() {
   const toggleMode = () => {
     setisTherapist(!isTherapist);
   };
+  const [sliderValue, setSliderValue] = React.useState<number>(0);
 
   return (
     <SafeAreaView>
@@ -114,6 +118,15 @@ export default function HomeScreen() {
 
         <View className="mb-10 ml-5 mr-5 mt-10 border-spacing-2 rounded-3xl border border-gray-300 px-4 py-4">
           <Text className="mb-3 mt-3 px-3">How are you feeling today?</Text>
+          <Slider
+            style={{ width: "100%", height: 40 }}
+            minimumValue={1}
+            maximumValue={10}
+            minimumTrackTintColor={NAV_THEME.light.primary}
+            maximumTrackTintColor={NAV_THEME.light.text}
+            value={sliderValue}
+            onValueChange={(value) => setSliderValue(value)}
+          />
           <Text className="flex-auto px-4 py-4 text-gray-500">
             Describe it in a few words:
           </Text>
