@@ -1,4 +1,4 @@
-import { useLocalSearchParams, usePathname } from "expo-router";
+import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
 import {
   ArrowLeftIcon,
   EllipsisIcon,
@@ -9,7 +9,13 @@ import {
   UsersRound,
 } from "lucide-react-native";
 import React, { useId } from "react";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import { GroupCard } from "~/components/group-card";
 import { MemberCard } from "~/components/member-card";
 import { SessionCard } from "~/components/session-card";
@@ -24,6 +30,8 @@ import { Group } from "~/types/group";
 export default function ProfileScreen() {
   const { userId } = useLocalSearchParams();
   const path = usePathname();
+
+  const router = useRouter();
 
   const { user: localUser } = useSessionStore((state) => state);
 
@@ -86,6 +94,15 @@ export default function ProfileScreen() {
                     {user.countryCode}
                   </Text>
                 </View>
+              </View>
+
+              <View className="flex w-full items-start justify-start">
+                <TouchableOpacity
+                  className="rounded-lg bg-white px-6 py-3 shadow"
+                  onPress={() => router.push("/(tabs)/profile/edit-categories")}
+                >
+                  <Text className="text-lg font-bold text-black">Click Me</Text>
+                </TouchableOpacity>
               </View>
 
               {/* Tags */}

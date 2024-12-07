@@ -9,7 +9,7 @@ export interface useSessionStoreProps {
 export const useSessionStore = create<useSessionStoreProps>((set) => ({
   user: {
     userId: "675423b92dde3a50bf569685",
-    name: "Zachary Nemeroff",
+    name: "David Popa",
     birthday: new Date("1998-11-10"),
     pfpUrl: "https://thispersondoesnotexist.com",
     groups: ["675423b92dde3a50bf569685"],
