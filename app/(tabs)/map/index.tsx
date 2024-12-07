@@ -6,6 +6,8 @@ import {
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import {
+  CircleIcon,
+  CirclePlusIcon,
   Clock,
   MapPinIcon,
   TriangleAlert,
@@ -106,6 +108,14 @@ export default function MapScreen() {
             }}
           ></Marker>
         ))}
+
+        <Button
+          size="icon"
+          onPress={() => router.push("/map/create-event")}
+          className="absolute right-4 top-4 p-4"
+        >
+          <CirclePlusIcon size={24} color={NAV_THEME.light.background} />
+        </Button>
       </MapView>
 
       <BottomSheetModalProvider>

@@ -8,6 +8,12 @@ export default function MapLayout() {
       }}
     >
       <Stack.Screen name="index" />
+      <Stack.Screen
+        name="create-event"
+        options={{
+          headerTitle: "Create event",
+        }}
+      />
     </Stack>
   );
 }
