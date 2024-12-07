@@ -6,6 +6,8 @@ import {
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import {
+  CircleIcon,
+  CirclePlusIcon,
   Clock,
   MapPinIcon,
   TriangleAlert,
@@ -15,14 +17,23 @@ import {
 import React from "react";
 import { SafeAreaView, Text, View } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
+import { fetchAllUserEvents } from "~/actions/event";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
+import { FallbackEvents } from "~/fallback/event";
 import { NAV_THEME } from "~/lib/constants";
+import { useSessionStore } from "~/lib/useSession";
+
+import { Event } from "~/types/event";
 
 export default function MapScreen() {
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
   const mapViewRef = React.useRef<MapView>(null);
   const router = useRouter();
+
+  const { user: localUser } = useSessionStore((state) => state);
+
+  const [events, setEvents] = React.useState<Event[]>([]);
   // callbacks
   const handlePresentModalPress = React.useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -39,6 +50,26 @@ export default function MapScreen() {
       longitudeDelta: 0.01,
     });
   };
+
+  const [selectedEvent, setSelectedEvent] = React.useState<Event | null>(null);
+
+  React.useEffect(() => {
+    // fetch user events
+    const fetchEvents = async () => {
+      const data = await fetchAllUserEvents(localUser.userId);
+
+      console.log("Fetched data", data);
+      if (data) {
+        setEvents(data);
+      } else {
+        console.warn("WARNING! Couldn't fetch events, using fallback data");
+        setEvents(FallbackEvents);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   return (
     <SafeAreaView className="flex h-full w-full">
       <MapView
@@ -58,23 +89,33 @@ export default function MapScreen() {
         //set the theme of the map
         showsUserLocation
       >
-        <Marker
-          coordinate={{
-            latitude: 46.7712,
-            longitude: 23.6236,
-          }}
-          onPress={() => {
-            handleMarkerPress({
-              latitude: 46.7712,
-              longitude: 23.6236,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            });
-            handlePresentModalPress();
-          }}
-          onSelect={() => console.log("Marker selected")}
-          onDeselect={() => console.log("Marker deselected")}
-        ></Marker>
+        {events.map((event) => (
+          <Marker
+            key={event.id}
+            coordinate={{
+              latitude: parseFloat(event.coordinate_x),
+              longitude: parseFloat(event.coordinate_y),
+            }}
+            onPress={() => {
+              handleMarkerPress({
+                latitude: parseFloat(event.coordinate_x),
+                longitude: parseFloat(event.coordinate_y),
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              });
+              handlePresentModalPress();
+              setSelectedEvent(event);
+            }}
+          ></Marker>
+        ))}
+
+        <Button
+          size="icon"
+          onPress={() => router.push("/map/create-event")}
+          className="absolute right-4 top-4 p-4"
+        >
+          <CirclePlusIcon size={24} color={NAV_THEME.light.background} />
+        </Button>
       </MapView>
 
       <BottomSheetModalProvider>
@@ -109,31 +150,30 @@ export default function MapScreen() {
 
             <View className="flex w-full flex-col items-center justify-center gap-y-2">
               <Text className="text-2xl font-semibold text-foreground">
-                Terapie de grup
+                {selectedEvent?.name}
               </Text>
               <Text className="text-lg font-medium text-muted-foreground">
-                Grup de dezvoltare emotionala si cognitiva pentru adolescenti cu
-                varste intre 14-17 ani
+                {selectedEvent?.description}
               </Text>
 
               <View className="flex flex-row items-center justify-center gap-x-1 pt-2">
                 <MapPinIcon color={NAV_THEME.light.text} size={16} />
                 <Text className="text-base font-medium text-muted-foreground">
-                  Cluj Napoca, Romania
+                  {selectedEvent?.location}
                 </Text>
               </View>
 
               <View className="flex flex-row items-center justify-center gap-x-1 pt-2">
                 <Users color={NAV_THEME.light.text} size={16} />
                 <Text className="text-base font-medium text-muted-foreground">
-                  53 members
+                  {selectedEvent?.participants} participants
                 </Text>
               </View>
 
               <Button
                 className="mt-6 flex w-full flex-row items-center justify-center rounded-xl border-2 border-border"
                 size="lg"
-                onPress={() => router.push("/groups/1")}
+                onPress={() => router.push(`/groups/${selectedEvent?.id}`)}
               >
                 <Text className="text-lg font-semibold text-background">
                   See details

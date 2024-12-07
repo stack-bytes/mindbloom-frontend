@@ -1,4 +1,4 @@
-import { useLocalSearchParams, usePathname } from "expo-router";
+import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
 import {
   ArrowLeftIcon,
   EllipsisIcon,
@@ -9,7 +9,13 @@ import {
   UsersRound,
 } from "lucide-react-native";
 import React, { useId } from "react";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import { GroupCard } from "~/components/group-card";
 import { MemberCard } from "~/components/member-card";
 import { SessionCard } from "~/components/session-card";
@@ -24,6 +30,8 @@ import { Group } from "~/types/group";
 export default function ProfileScreen() {
   const { userId } = useLocalSearchParams();
   const path = usePathname();
+
+  const router = useRouter();
 
   const { user: localUser } = useSessionStore((state) => state);
 
@@ -88,15 +96,25 @@ export default function ProfileScreen() {
                 </View>
               </View>
 
+              <View className="flex w-full items-start justify-start">
+                <TouchableOpacity
+                  className="rounded-lg bg-white px-6 py-3 shadow"
+                  onPress={() => router.push("/(tabs)/profile/edit-categories")}
+                >
+                  <Text className="text-lg font-bold text-black">Click Me</Text>
+                </TouchableOpacity>
+              </View>
+
               {/* Tags */}
               <View className="h-fit w-full gap-y-2 rounded-xl border border-border bg-card px-3 py-3">
                 <Text className="text-sm font-bold text-muted-foreground">
-                  INTERESTS
+                  GROUP CATEGORIES
                 </Text>
-
+                {/* Interests are now group categories */}
                 <View className="flex w-full flex-row flex-wrap gap-x-2 gap-y-2">
                   {user.interests.map((interest) => (
                     <Badge
+                      key={interest}
                       variant="outline"
                       className="w-fit flex-row gap-x-2 rounded-xl bg-background px-3"
                     >

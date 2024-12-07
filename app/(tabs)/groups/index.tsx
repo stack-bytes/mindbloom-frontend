@@ -1,11 +1,19 @@
 import { FilterIcon, PlusIcon, UsersRound } from "lucide-react-native";
-import { FlatList, SafeAreaView, View } from "react-native";
+import React from "react";
+import { FlatList, SafeAreaView, TouchableOpacity, View } from "react-native";
+import {
+  createNewGroup,
+  fetchAllGroups,
+  fetchUserGroups,
+} from "~/actions/group";
 import { GroupCard } from "~/components/group-card";
 import { Header } from "~/components/Header";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Text } from "~/components/ui/text";
 import { NAV_THEME } from "~/lib/constants";
+import { useSessionStore } from "~/lib/useSession";
+import { Group } from "~/types/group";
 
 const items: {
   id: string;
@@ -34,6 +42,51 @@ const items: {
 ];
 
 export default function GroupsScreen() {
+  const { user: localUser } = useSessionStore((state) => state);
+
+  const [loading, setLoading] = React.useState(true);
+
+  const [groups, setGroups] = React.useState<Group[] | null>(null);
+
+  const createGroup = async () => {
+    console.log("Creating new group...");
+    // Create a new group
+    const newGroupId = await createNewGroup(localUser.userId, {
+      name: "New therapy group",
+      description: "Please enter a description",
+      location: "Online",
+      coordinate_x: 0,
+      coordinate_y: 0,
+      owner: localUser.userId,
+      members: [localUser.userId],
+      metadata: {
+        tags: ["therapy", "group"],
+        interests: ["mental health"],
+      },
+    });
+
+    if (newGroupId) {
+      setLoading(true);
+      console.log("Group created with id:", newGroupId);
+    } else {
+      return;
+    }
+  };
+
+  React.useEffect(() => {
+    console.log("RESETTING Fetching user groups...");
+    // Fetch user groups
+    fetchAllGroups().then((data) => {
+      if (data) {
+        setGroups(data);
+      }
+
+      setLoading(false);
+
+      console.log("User groups:", data);
+    });
+  }, [loading]);
+
   return (
     <View className="h-full w-full bg-primary">
       <SafeAreaView className="flex flex-col gap-y-4">
@@ -56,22 +109,38 @@ export default function GroupsScreen() {
             >
               <FilterIcon color={NAV_THEME.light.text} />
             </Button>
-            <Button size="icon" className="rounded-lg border-2 border-border">
+            <Button
+              onPress={createGroup}
+              size="icon"
+              className="rounded-lg border-2 border-border"
+            >
               <PlusIcon color={NAV_THEME.light.background} />
             </Button>
           </View>
 
+          {
+            // If there are no groups, show a message
+            (!groups || groups?.length === 0) && (
+              <TouchableOpacity onPress={() => setLoading(true)}>
+                <Text className="text-center text-lg font-bold text-foreground">
+                  No groups found
+                </Text>
+              </TouchableOpacity>
+            )
+          }
           <FlatList
-            data={items}
+            data={groups}
             renderItem={({ item }) => (
               <GroupCard
                 id={item.id}
-                title={item.title}
+                title={item.name}
                 description={item.description}
-                members={item.members}
+                members={item.members.length}
                 bestMatch={item.id === "1"}
               />
             )}
+            onRefresh={() => setLoading(true)}
+            refreshing={loading}
             contentContainerStyle={{ rowGap: 16 }}
           />
         </View>

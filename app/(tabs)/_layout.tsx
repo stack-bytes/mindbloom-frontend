@@ -15,6 +15,7 @@ export default function TabsLayout() {
 
   return (
     <Tabs
+      initialRouteName="home"
       screenOptions={{
         headerShown: false,
       }}
@@ -50,7 +51,10 @@ export default function TabsLayout() {
         name="schedule"
         options={{
           title: "Schedule",
+          headerShown: true,
+          headerTitle: "Schedule",
           tabBarIcon: ({ color }) => <CalendarClock color={color} size={24} />,
+          header: (props) => <NavigationHeader {...props} />,
         }}
       />
 
