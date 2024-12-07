@@ -163,7 +163,7 @@ export default function GroupScreen() {
               {/* Tags */}
               <View className="h-fit w-full gap-y-2 rounded-xl border border-border bg-card px-3 py-3">
                 <Text className="text-sm font-bold text-muted-foreground">
-                  INTERESTS
+                  GROUP CATEGORIES
                 </Text>
 
                 <View className="flex w-full flex-row flex-wrap gap-x-2 gap-y-2">

@@ -120,7 +120,7 @@ export default function GroupsScreen() {
 
           {
             // If there are no groups, show a message
-            groups?.length === 0 && (
+            (!groups || groups?.length === 0) && (
               <Text className="text-center text-lg font-bold text-foreground">
                 No groups found
               </Text>
