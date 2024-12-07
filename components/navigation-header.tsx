@@ -4,9 +4,11 @@ import { ArrowLeftIcon, EllipsisIcon } from "lucide-react-native";
 import { NAV_THEME } from "~/lib/constants";
 
 import { BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
-
+import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 //
-export const NavigationHeader = (props: BottomTabHeaderProps) => {
+type propsType = BottomTabHeaderProps | NativeStackHeaderProps;
+
+export const NavigationHeader = (props: propsType) => {
   return (
     <View className="flex-row items-center justify-between bg-primary pt-20">
       <Button onPress={() => props.navigation.goBack()} variant="ghost">

@@ -20,6 +20,8 @@ import { Button } from "~/components/ui/button";
 import { ArrowLeftIcon, EllipsisIcon } from "lucide-react-native";
 import { NavigationHeader } from "~/components/navigation-header";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useSessionStore } from "~/lib/useSession";
+import { fetchUserInfo } from "~/actions/user";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -41,6 +43,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+  const { user } = useSessionStore((state) => state);
 
   React.useEffect(() => {
     (async () => {
@@ -102,6 +105,17 @@ export default function RootLayout() {
             options={{
               title: "Map",
               headerTitle: "Map",
+              headerShown: true,
+              header: (props) => <NavigationHeader {...props} />,
+            }}
+          />
+
+          <Tabs.Screen
+            name="profile"
+            options={{
+              href: `/profile/${user.userId}`,
+              title: "Profile",
+              headerTitle: "Your Profile",
               headerShown: true,
               header: (props) => <NavigationHeader {...props} />,
             }}
