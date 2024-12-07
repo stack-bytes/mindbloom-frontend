@@ -49,6 +49,8 @@ export default function MapScreen() {
     });
   };
 
+  const [selectedEvent, setSelectedEvent] = React.useState<Event | null>(null);
+
   React.useEffect(() => {
     // fetch user events
     const fetchEvents = async () => {
@@ -100,6 +102,7 @@ export default function MapScreen() {
                 longitudeDelta: 0.01,
               });
               handlePresentModalPress();
+              setSelectedEvent(event);
             }}
           ></Marker>
         ))}
@@ -137,31 +140,30 @@ export default function MapScreen() {
 
             <View className="flex w-full flex-col items-center justify-center gap-y-2">
               <Text className="text-2xl font-semibold text-foreground">
-                Terapie de grup
+                {selectedEvent?.name}
               </Text>
               <Text className="text-lg font-medium text-muted-foreground">
-                Grup de dezvoltare emotionala si cognitiva pentru adolescenti cu
-                varste intre 14-17 ani
+                {selectedEvent?.description}
               </Text>
 
               <View className="flex flex-row items-center justify-center gap-x-1 pt-2">
                 <MapPinIcon color={NAV_THEME.light.text} size={16} />
                 <Text className="text-base font-medium text-muted-foreground">
-                  Cluj Napoca, Romania
+                  {selectedEvent?.location}
                 </Text>
               </View>
 
               <View className="flex flex-row items-center justify-center gap-x-1 pt-2">
                 <Users color={NAV_THEME.light.text} size={16} />
                 <Text className="text-base font-medium text-muted-foreground">
-                  53 members
+                  {selectedEvent?.participants} participants
                 </Text>
               </View>
 
               <Button
                 className="mt-6 flex w-full flex-row items-center justify-center rounded-xl border-2 border-border"
                 size="lg"
-                onPress={() => router.push("/groups/1")}
+                onPress={() => router.push(`/groups/${selectedEvent?.id}`)}
               >
                 <Text className="text-lg font-semibold text-background">
                   See details
