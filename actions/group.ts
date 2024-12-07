@@ -44,3 +44,17 @@ export const fetchUserGroups = async (
   console.log("OK User groups:", data);
   return data;
 };
+
+export const fetchGroupById = async (
+  groupId: string
+): Promise<Group | null> => {
+  const response = await fetch(`${ENDPOINT}/groups?groupId=${groupId}`);
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  console.log("OK Group by ID:", data);
+  return data;
+};

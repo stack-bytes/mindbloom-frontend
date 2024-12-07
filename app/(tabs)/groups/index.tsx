@@ -111,13 +111,13 @@ export default function GroupsScreen() {
           </View>
 
           <FlatList
-            data={items}
+            data={groups}
             renderItem={({ item }) => (
               <GroupCard
                 id={item.id}
-                title={item.title}
+                title={item.name}
                 description={item.description}
-                members={item.members}
+                members={item.members.length}
                 bestMatch={item.id === "1"}
               />
             )}

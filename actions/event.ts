@@ -14,3 +14,19 @@ export const fetchAllUserEvents = async (
   const data = await response.json();
   return data;
 };
+
+export const createEvent = async (event: Event): Promise<Event | null> => {
+  const response = await fetch(`${ENDPOINT}/events`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(event),
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+  const data = await response.json();
+  return data;
+};

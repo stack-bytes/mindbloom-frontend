@@ -11,6 +11,7 @@ import {
 } from "lucide-react-native";
 import React from "react";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { fetchGroupById } from "~/actions/group";
 import { MemberCard } from "~/components/member-card";
 import { SessionCard } from "~/components/session-card";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
@@ -18,6 +19,7 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { NAV_THEME } from "~/lib/constants";
+import { Group } from "~/types/group";
 
 export default function GroupScreen() {
   const { groupId, editing } = useLocalSearchParams<{
@@ -26,6 +28,20 @@ export default function GroupScreen() {
   }>();
 
   const [joined, setJoined] = React.useState(false);
+
+  const [group, setGroup] = React.useState<Group | null>(null);
+
+  React.useEffect(() => {
+    (async () => {
+      const response = await fetchGroupById(groupId);
+      if (!response) {
+        return;
+      }
+      setGroup(response);
+    })();
+  }, [groupId]);
+
+  if (!group) return <Text>Loading...</Text>;
 
   return (
     <View className="h-full w-full bg-primary">
@@ -59,35 +75,33 @@ export default function GroupScreen() {
                 {editing === "yes" ? (
                   <View className="flex flex-row items-center justify-center gap-x-2">
                     <Input className="text-xl font-semibold text-foreground">
-                      Terapie pentru adolescenti
+                      {group.name}
                     </Input>
                     <SquarePen size={16} color={NAV_THEME.light.text} />
                   </View>
                 ) : (
                   <Text className="text-xl font-semibold text-foreground">
-                    Terapie pentru adolescenti
+                    {group.name}
                   </Text>
                 )}
 
                 {editing === "yes" ? (
                   <View className="flex flex-row items-center justify-center gap-x-2">
                     <Input className="h-16 text-center text-base font-medium text-muted-foreground">
-                      Grup de dezvoltare emotionala si cognitiva pentru
-                      adolescenti cu varste intre 14-17 ani
+                      {group.description}
                     </Input>
                     <SquarePen size={16} color={NAV_THEME.light.text} />
                   </View>
                 ) : (
                   <Text className="text-center text-base font-medium text-muted-foreground">
-                    Grup de dezvoltare emotionala si cognitiva pentru
-                    adolescenti cu varste intre 14-17 ani
+                    {group.description}
                   </Text>
                 )}
 
                 <View className="flex flex-row items-center justify-center gap-x-1 pt-2">
                   <MapPinIcon color={NAV_THEME.light.text} size={16} />
                   <Text className="text-base font-medium text-muted-foreground">
-                    Cluj Napoca, Romania
+                    {group.location}
                   </Text>
                 </View>
               </View>
