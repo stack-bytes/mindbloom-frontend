@@ -16,6 +16,7 @@ export default function GroupsLayout() {
         name="[groupId]/index"
         options={{
           headerShown: true,
+          animation: "slide_from_left",
           header: ({ navigation, options, route }) => (
             <View className="flex-row items-center justify-between bg-primary pt-20">
               <Button onPress={() => navigation.goBack()} variant="ghost">
