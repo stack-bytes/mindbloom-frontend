@@ -13,6 +13,7 @@ import {
   PlusIcon,
   UsersRound,
   Settings,
+  ArrowDownUp,
 } from "lucide-react-native";
 import { FlatList } from "react-native";
 import { GroupCard } from "~/components/group-card";
@@ -21,6 +22,10 @@ import { Header } from "~/components/Header";
 import { Input } from "~/components/ui/input";
 
 import { NAV_THEME } from "~/lib/constants";
+
+import React from "react";
+
+import { useSessionStore } from "~/lib/useSession"; // import your Zustand store
 
 const items: {
   id: string;
@@ -43,6 +48,11 @@ const items: {
 ];
 
 export default function HomeScreen() {
+  const { isTherapist, setisTherapist } = useSessionStore((state) => state);
+  const toggleMode = () => {
+    setisTherapist(!isTherapist);
+  };
+
   return (
     <SafeAreaView>
       <ScrollView className="w-full">
@@ -50,13 +60,21 @@ export default function HomeScreen() {
           <Button size="icon" className="rounded-full bg-slate-300">
             <Bell color={NAV_THEME.light.text} />
           </Button>
+          <Text className="items-center text-2xl text-primary">
+            {isTherapist ? "Mode: Therapist" : "Mode: Pacient"}
+          </Text>
 
           <View className="flex w-fit flex-row gap-x-4">
             <Button className="rounded-full bg-slate-300" size="icon">
               <CalendarClock color={NAV_THEME.light.text} />
             </Button>
-            <Button className="rounded-full bg-slate-300" size="icon">
-              <Settings color={NAV_THEME.light.text} />
+
+            <Button
+              className="rounded-full bg-slate-300"
+              size="icon"
+              onPress={toggleMode}
+            >
+              <ArrowDownUp color={NAV_THEME.light.text} />
             </Button>
           </View>
         </View>

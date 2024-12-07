@@ -2,8 +2,10 @@ import { create } from "zustand";
 import { User } from "~/types/user";
 
 export interface useSessionStoreProps {
+  isTherapist: boolean;
   user: User;
   setUser: (user: User) => void;
+  setisTherapist: (value: boolean) => void;
 }
 
 export const useSessionStore = create<useSessionStoreProps>((set) => ({
@@ -18,6 +20,9 @@ export const useSessionStore = create<useSessionStoreProps>((set) => ({
     createdAt: new Date("2022-01-01"),
     countryCode: "US",
   },
+
+  isTherapist: false,
+  setisTherapist: (value) => set({ isTherapist: value }),
 
   setUser: (user) => set({ user }),
 }));
