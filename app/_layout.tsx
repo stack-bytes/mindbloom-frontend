@@ -17,7 +17,14 @@ import { PortalHost } from "@rn-primitives/portal";
 import { ThemeToggle } from "~/components/ThemeToggle";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { Button } from "~/components/ui/button";
-import { ArrowLeftIcon, EllipsisIcon } from "lucide-react-native";
+import {
+  ArrowLeftIcon,
+  CalendarClock,
+  EllipsisIcon,
+  HomeIcon,
+  MapPin,
+  UsersIcon,
+} from "lucide-react-native";
 import { NavigationHeader } from "~/components/navigation-header";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSessionStore } from "~/lib/useSession";
@@ -86,26 +93,20 @@ export default function RootLayout() {
           }}
         >
           <Tabs.Screen
-            name="schedule"
+            name="groups"
             options={{
-              title: "schedule",
-              headerRight: () => <ThemeToggle />,
+              title: "Groups",
+              tabBarIcon: ({ color }) => <UsersIcon color={color} size={24} />,
             }}
           />
 
           <Tabs.Screen
-            name="Groups"
-            options={{
-              title: "Starter Base",
-            }}
-          />
-
-          <Tabs.Screen
-            name="map/index"
+            name="map"
             options={{
               title: "Map",
               headerTitle: "Map",
               headerShown: true,
+              tabBarIcon: ({ color }) => <MapPin color={color} size={24} />,
               header: (props) => <NavigationHeader {...props} />,
             }}
           />
