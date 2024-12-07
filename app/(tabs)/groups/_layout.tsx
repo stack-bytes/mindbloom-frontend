@@ -1,5 +1,6 @@
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { ArrowLeftIcon, EllipsisIcon } from "lucide-react-native";
+import React from "react";
 import { Text, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { NAV_THEME } from "~/lib/constants";
@@ -25,7 +26,10 @@ export default function GroupsLayout() {
               <Text className="text-lg font-semibold text-background">
                 Group Details
               </Text>
-              <Button onPress={() => navigation.goBack()} variant="ghost">
+              <Button
+                onPress={() => navigation.setParams({ editing: "yes" })}
+                variant="ghost"
+              >
                 <EllipsisIcon color={NAV_THEME.light.background} />
               </Button>
             </View>

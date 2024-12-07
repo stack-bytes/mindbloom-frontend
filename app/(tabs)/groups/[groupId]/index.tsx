@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, usePathname } from "expo-router";
 import {
   ArrowLeftIcon,
   EllipsisIcon,
@@ -6,6 +6,7 @@ import {
   InstagramIcon,
   MapPinIcon,
   PinIcon,
+  SquarePen,
   UsersRound,
 } from "lucide-react-native";
 import React from "react";
@@ -15,10 +16,14 @@ import { SessionCard } from "~/components/session-card";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 import { NAV_THEME } from "~/lib/constants";
 
 export default function GroupScreen() {
-  const { groupId } = useLocalSearchParams();
+  const { groupId, editing } = useLocalSearchParams<{
+    groupId: string;
+    editing?: string;
+  }>();
 
   const [joined, setJoined] = React.useState(false);
 
@@ -51,13 +56,33 @@ export default function GroupScreen() {
             <View className="flex flex-col gap-y-6 px-4 pt-16">
               {/* Info */}
               <View className="w-full flex-col items-center justify-center gap-y-2">
-                <Text className="text-xl font-semibold text-foreground">
-                  Terapie pentru adolescenti
-                </Text>
-                <Text className="text-center text-base font-medium text-muted-foreground">
-                  Grup de dezvoltare emotionala si cognitiva pentru adolescenti
-                  cu varste intre 14-17 ani
-                </Text>
+                {editing === "yes" ? (
+                  <View className="flex flex-row items-center justify-center gap-x-2">
+                    <Input className="text-xl font-semibold text-foreground">
+                      Terapie pentru adolescenti
+                    </Input>
+                    <SquarePen size={16} color={NAV_THEME.light.text} />
+                  </View>
+                ) : (
+                  <Text className="text-xl font-semibold text-foreground">
+                    Terapie pentru adolescenti
+                  </Text>
+                )}
+
+                {editing === "yes" ? (
+                  <View className="flex flex-row items-center justify-center gap-x-2">
+                    <Input className="h-16 text-center text-base font-medium text-muted-foreground">
+                      Grup de dezvoltare emotionala si cognitiva pentru
+                      adolescenti cu varste intre 14-17 ani
+                    </Input>
+                    <SquarePen size={16} color={NAV_THEME.light.text} />
+                  </View>
+                ) : (
+                  <Text className="text-center text-base font-medium text-muted-foreground">
+                    Grup de dezvoltare emotionala si cognitiva pentru
+                    adolescenti cu varste intre 14-17 ani
+                  </Text>
+                )}
 
                 <View className="flex flex-row items-center justify-center gap-x-1 pt-2">
                   <MapPinIcon color={NAV_THEME.light.text} size={16} />
