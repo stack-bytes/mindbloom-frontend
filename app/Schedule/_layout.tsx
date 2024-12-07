@@ -14,7 +14,11 @@ import { Platform, Text, View } from "react-native";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
+import { ThemeToggle } from "~/components/ThemeToggle";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
+import { Button } from "~/components/ui/button";
+import { ArrowLeftIcon, EllipsisIcon } from "lucide-react-native";
+import { NavigationHeader } from "~/components/navigation-header";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const LIGHT_THEME: Theme = {
@@ -72,9 +76,37 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
         <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-        <Stack screenOptions={{ headerShown: false }} initialRouteName="(tabs)">
-          <Stack.Screen name="(tabs)" />
-        </Stack>
+        <Tabs
+          screenOptions={{
+            headerShown: false,
+            animation: "shift",
+          }}
+        >
+          <Tabs.Screen
+            name="schedule"
+            options={{
+              title: "schedule",
+              headerRight: () => <ThemeToggle />,
+            }}
+          />
+
+          <Tabs.Screen
+            name="Groups"
+            options={{
+              title: "Starter Base",
+            }}
+          />
+
+          <Tabs.Screen
+            name="map/index"
+            options={{
+              title: "Map",
+              headerTitle: "Map",
+              headerShown: true,
+              header: (props) => <NavigationHeader {...props} />,
+            }}
+          />
+        </Tabs>
         <PortalHost />
       </ThemeProvider>
     </GestureHandlerRootView>
