@@ -2,7 +2,7 @@ import React from "react";
 
 import { View } from "react-native";
 import { Text } from "./ui/text";
-
+import { NAV_THEME } from "~/lib/constants";
 
 export interface IHeaderProps {
   icon: React.ReactElement;
@@ -20,18 +20,19 @@ export const Header: React.FC<IHeaderProps> = ({
   ...props
 }) => {
   return (
-    <View className="w-full px-8 pt-5">
-      <View
-        className=
-          "flex flex-row items-center justify-start gap-x-2"
-      
-      >
-        {React.cloneElement(props.icon, { size: 36, color: "black" })}
-        <Text className="text-4xl font-bold">{props.title}</Text>
+    <View className="w-full px-8 pt-8">
+      <View className="flex flex-row items-center justify-start gap-x-2">
+        {React.cloneElement(props.icon, {
+          size: 36,
+          color: NAV_THEME.light.background,
+        })}
+        <Text className="text-4xl font-bold text-background">
+          {props.title}
+        </Text>
       </View>
 
       {props.subtitle && (
-        <Text className="text-lg text-[#9F9F9F]">{props.subtitle}</Text>
+        <Text className="text-lg text-border">{props.subtitle}</Text>
       )}
     </View>
   );

@@ -10,7 +10,7 @@ import {
 import { SplashScreen, Stack, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
@@ -71,7 +71,11 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Tabs>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
         <Tabs.Screen
           name="schedule"
           options={{
