@@ -14,22 +14,8 @@ import { Platform, Text, View } from "react-native";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
-import { ThemeToggle } from "~/components/ThemeToggle";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
-import { Button } from "~/components/ui/button";
-import {
-  ArrowLeftIcon,
-  CalendarClock,
-  EllipsisIcon,
-  HomeIcon,
-  MapPin,
-  UserRound,
-  UsersIcon,
-} from "lucide-react-native";
-import { NavigationHeader } from "~/components/navigation-header";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useSessionStore } from "~/lib/useSession";
-import { fetchUserInfo } from "~/actions/user";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -51,7 +37,6 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
-  const { user } = useSessionStore((state) => state);
 
   React.useEffect(() => {
     (async () => {
@@ -87,63 +72,9 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
         <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-        <Tabs
-          screenOptions={{
-            headerShown: false,
-            animation: "shift",
-          }}
-        >
-          <Tabs.Screen
-            name="groups"
-            options={{
-              title: "Groups",
-              tabBarIcon: ({ color }) => <UsersIcon color={color} size={24} />,
-            }}
-          />
-
-          <Tabs.Screen
-            name="map"
-            options={{
-              title: "Map",
-              headerTitle: "Map",
-              headerShown: true,
-              tabBarIcon: ({ color }) => <MapPin color={color} size={24} />,
-              header: (props) => <NavigationHeader {...props} />,
-            }}
-          />
-
-          <Tabs.Screen
-            name="home"
-            options={{
-              title: "Home",
-              headerRight: () => <ThemeToggle />,
-              tabBarIcon: ({ color }) => <HomeIcon color={color} size={24} />,
-            }}
-          />
-
-          <Tabs.Screen
-            name="schedule"
-            options={{
-              title: "Schedule",
-              headerRight: () => <ThemeToggle />,
-              tabBarIcon: ({ color }) => (
-                <CalendarClock color={color} size={24} />
-              ),
-            }}
-          />
-
-          <Tabs.Screen
-            name="profile"
-            options={{
-              href: `/profile/${user.userId}`,
-              title: "Profile",
-              headerTitle: "Your Profile",
-              headerShown: true,
-              header: (props) => <NavigationHeader {...props} />,
-              tabBarIcon: ({ color }) => <UserRound color={color} size={24} />,
-            }}
-          />
-        </Tabs>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+        </Stack>
         <PortalHost />
       </ThemeProvider>
     </GestureHandlerRootView>
