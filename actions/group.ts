@@ -58,3 +58,51 @@ export const fetchGroupById = async (
   console.log("OK Group by ID:", data);
   return data;
 };
+
+export const leaveGroup = async (
+  groupId: string,
+  userId: string
+): Promise<boolean> => {
+  const response = await fetch(
+    `${ENDPOINT}/groups/user/remove?groupId=${groupId}&userId=${userId}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!response.ok) {
+    return false;
+  }
+
+  return true;
+};
+
+export const joinGroup = async (
+  groupId: string,
+  userId: string
+): Promise<boolean> => {
+  const response = await fetch(
+    `${ENDPOINT}/groups/user/add?groupId=${groupId}&userId=${userId}`,
+    {
+      method: "PATCH",
+    }
+  );
+
+  if (!response.ok) {
+    return false;
+  }
+
+  return true;
+};
+
+export const fetchAllGroups = async (): Promise<Group[] | null> => {
+  const response = await fetch(`${ENDPOINT}/groups/all`);
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  console.log("OK All groups:", data);
+  return data;
+};

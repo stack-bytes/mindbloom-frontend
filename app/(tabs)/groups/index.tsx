@@ -1,7 +1,11 @@
 import { FilterIcon, PlusIcon, UsersRound } from "lucide-react-native";
 import React from "react";
 import { FlatList, SafeAreaView, View } from "react-native";
-import { createNewGroup, fetchUserGroups } from "~/actions/group";
+import {
+  createNewGroup,
+  fetchAllGroups,
+  fetchUserGroups,
+} from "~/actions/group";
 import { GroupCard } from "~/components/group-card";
 import { Header } from "~/components/Header";
 import { Button } from "~/components/ui/button";
@@ -70,12 +74,13 @@ export default function GroupsScreen() {
   };
 
   React.useEffect(() => {
-    console.log("Fetching user groups...");
+    console.log("RESETTING Fetching user groups...");
     // Fetch user groups
-    fetchUserGroups(localUser.userId).then((data) => {
+    fetchAllGroups().then((data) => {
       if (data) {
         setGroups(data);
       }
+
       setLoading(false);
 
       console.log("User groups:", data);
@@ -98,18 +103,29 @@ export default function GroupsScreen() {
               placeholder="Search for groups"
             />
             <Button
-              onPress={createGroup}
               size="icon"
               className="rounded-lg border-2 border-border"
               variant="ghost"
             >
               <FilterIcon color={NAV_THEME.light.text} />
             </Button>
-            <Button size="icon" className="rounded-lg border-2 border-border">
+            <Button
+              onPress={createGroup}
+              size="icon"
+              className="rounded-lg border-2 border-border"
+            >
               <PlusIcon color={NAV_THEME.light.background} />
             </Button>
           </View>
 
+          {
+            // If there are no groups, show a message
+            groups?.length === 0 && (
+              <Text className="text-center text-lg font-bold text-foreground">
+                No groups found
+              </Text>
+            )
+          }
           <FlatList
             data={groups}
             renderItem={({ item }) => (

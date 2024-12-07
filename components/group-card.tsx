@@ -4,6 +4,9 @@ import { Badge } from "./ui/badge";
 import { UsersRound } from "lucide-react-native";
 import { NAV_THEME } from "~/lib/constants";
 import { useRouter } from "expo-router";
+import { useSessionStore } from "~/lib/useSession";
+import React from "react";
+import { fetchUserGroups } from "~/actions/group";
 
 interface GroupCardProps {
   id: string; //The id of the group
@@ -21,11 +24,25 @@ export const GroupCard: React.FC<GroupCardProps> = ({
   bestMatch = false,
 }) => {
   const router = useRouter();
+  const { user: localUser } = useSessionStore((state) => state);
+
+  const [joined, setJoined] = React.useState(false);
+
+  React.useEffect(() => {
+    if (localUser) {
+      fetchUserGroups(localUser.userId).then((groups) => {
+        if (groups) {
+          const groupIds = groups.map((group) => group.id);
+          setJoined(groupIds.includes(id));
+        }
+      });
+    }
+  }, [localUser]);
 
   return (
     <View className="flex gap-y-2 rounded-2xl border-2 border-border bg-card px-4 pb-2 pt-6">
-      {bestMatch && (
-        <Text className="text-lg font-bold text-[#E6B745]">BEST MATCH</Text>
+      {joined && (
+        <Text className="text-base font-bold text-[#E6B745]">JOINED</Text>
       )}
 
       <Text className="text-lg font-bold text-foreground">{title}</Text>
