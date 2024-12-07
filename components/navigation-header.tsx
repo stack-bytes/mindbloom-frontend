@@ -19,7 +19,7 @@ export const NavigationHeader = (props: propsType) => {
           ? props.options.headerTitle
           : ""}
       </Text>
-      <Button onPress={() => props.navigation.goBack()} variant="ghost">
+      <Button variant="ghost">
         <EllipsisIcon color={NAV_THEME.light.background} />
       </Button>
     </View>

@@ -135,21 +135,12 @@ export default function RootLayout() {
           <Tabs.Screen
             name="profile"
             options={{
-              title: "Profile",
-              headerRight: () => <ThemeToggle />,
-              tabBarIcon: ({ color }) => <UserRound color={color} size={24} />,
-              header: (props) => <NavigationHeader {...props} />,
-            }}
-          />
-
-          <Tabs.Screen
-            name="profile"
-            options={{
               href: `/profile/${user.userId}`,
               title: "Profile",
               headerTitle: "Your Profile",
               headerShown: true,
               header: (props) => <NavigationHeader {...props} />,
+              tabBarIcon: ({ color }) => <UserRound color={color} size={24} />,
             }}
           />
         </Tabs>
