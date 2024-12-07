@@ -97,6 +97,7 @@ export default function ProfileScreen() {
                 <View className="flex w-full flex-row flex-wrap gap-x-2 gap-y-2">
                   {user.interests.map((interest) => (
                     <Badge
+                      key={interest}
                       variant="outline"
                       className="w-fit flex-row gap-x-2 rounded-xl bg-background px-3"
                     >

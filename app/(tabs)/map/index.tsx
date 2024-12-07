@@ -15,14 +15,23 @@ import {
 import React from "react";
 import { SafeAreaView, Text, View } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
+import { fetchAllUserEvents } from "~/actions/event";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
+import { FallbackEvents } from "~/fallback/event";
 import { NAV_THEME } from "~/lib/constants";
+import { useSessionStore } from "~/lib/useSession";
+
+import { Event } from "~/types/event";
 
 export default function MapScreen() {
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
   const mapViewRef = React.useRef<MapView>(null);
   const router = useRouter();
+
+  const { user: localUser } = useSessionStore((state) => state);
+
+  const [events, setEvents] = React.useState<Event[]>([]);
   // callbacks
   const handlePresentModalPress = React.useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -39,6 +48,24 @@ export default function MapScreen() {
       longitudeDelta: 0.01,
     });
   };
+
+  React.useEffect(() => {
+    // fetch user events
+    const fetchEvents = async () => {
+      const data = await fetchAllUserEvents(localUser.userId);
+
+      console.log("Fetched data", data);
+      if (data) {
+        setEvents(data);
+      } else {
+        console.warn("WARNING! Couldn't fetch events, using fallback data");
+        setEvents(FallbackEvents);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
   return (
     <SafeAreaView className="flex h-full w-full">
       <MapView
@@ -58,23 +85,24 @@ export default function MapScreen() {
         //set the theme of the map
         showsUserLocation
       >
-        <Marker
-          coordinate={{
-            latitude: 46.7712,
-            longitude: 23.6236,
-          }}
-          onPress={() => {
-            handleMarkerPress({
-              latitude: 46.7712,
-              longitude: 23.6236,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            });
-            handlePresentModalPress();
-          }}
-          onSelect={() => console.log("Marker selected")}
-          onDeselect={() => console.log("Marker deselected")}
-        ></Marker>
+        {events.map((event) => (
+          <Marker
+            key={event.id}
+            coordinate={{
+              latitude: parseFloat(event.coordinate_x),
+              longitude: parseFloat(event.coordinate_y),
+            }}
+            onPress={() => {
+              handleMarkerPress({
+                latitude: parseFloat(event.coordinate_x),
+                longitude: parseFloat(event.coordinate_y),
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              });
+              handlePresentModalPress();
+            }}
+          ></Marker>
+        ))}
       </MapView>
 
       <BottomSheetModalProvider>
