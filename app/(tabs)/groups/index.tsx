@@ -1,6 +1,6 @@
 import { FilterIcon, PlusIcon, UsersRound } from "lucide-react-native";
 import React from "react";
-import { FlatList, SafeAreaView, View } from "react-native";
+import { FlatList, SafeAreaView, TouchableOpacity, View } from "react-native";
 import {
   createNewGroup,
   fetchAllGroups,
@@ -121,9 +121,11 @@ export default function GroupsScreen() {
           {
             // If there are no groups, show a message
             (!groups || groups?.length === 0) && (
-              <Text className="text-center text-lg font-bold text-foreground">
-                No groups found
-              </Text>
+              <TouchableOpacity onPress={() => setLoading(true)}>
+                <Text className="text-center text-lg font-bold text-foreground">
+                  No groups found
+                </Text>
+              </TouchableOpacity>
             )
           }
           <FlatList
@@ -137,6 +139,8 @@ export default function GroupsScreen() {
                 bestMatch={item.id === "1"}
               />
             )}
+            onRefresh={() => setLoading(true)}
+            refreshing={loading}
             contentContainerStyle={{ rowGap: 16 }}
           />
         </View>

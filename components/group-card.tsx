@@ -37,7 +37,7 @@ export const GroupCard: React.FC<GroupCardProps> = ({
         }
       });
     }
-  }, [localUser]);
+  }, []);
 
   return (
     <View className="flex gap-y-2 rounded-2xl border-2 border-border bg-card px-4 pb-2 pt-6">

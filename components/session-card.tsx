@@ -1,9 +1,16 @@
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { CalendarClock, UsersRound } from "lucide-react-native";
+import { CalendarClock, UsersRound, X } from "lucide-react-native";
 import { NAV_THEME } from "~/lib/constants";
 import { useRouter } from "expo-router";
+import { useSessionStore } from "~/lib/useSession";
+import {
+  addUserToEvent,
+  fetchAllUserEvents,
+  removeUserFromEvent,
+} from "~/actions/event";
+import React from "react";
 
 interface SessionCardProps {
   id: string; //The id of the group
@@ -20,9 +27,62 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 }) => {
   const router = useRouter();
 
+  const { user: localUser } = useSessionStore((state) => state);
+
+  const [attends, setAttends] = React.useState(false);
+
+  /* Check if the user is attending the event */
+  React.useEffect(() => {
+    const checkAttends = async () => {
+      const events = await fetchAllUserEvents(localUser.userId);
+
+      if (events) {
+        const event = events.find((event) => event.id === id);
+
+        if (event) {
+          setAttends(true);
+        }
+      }
+    };
+
+    checkAttends();
+  });
+
+  const onPressAttend = async () => {
+    if (attends) {
+      //Remove user from the event
+      const result = await removeUserFromEvent(id, localUser.userId);
+
+      if (result) {
+        setAttends(false);
+      } else {
+        console.log("Failed to remove user from event");
+      }
+    } else {
+      const result = await addUserToEvent(id, localUser.userId);
+
+      if (result) {
+        setAttends(true);
+      } else {
+        console.log("Failed to add user to event");
+      }
+    }
+  };
+
+  const onRemovePress = () => {};
   return (
     <View className="flex gap-y-2 rounded-2xl border-2 border-border bg-card px-4 pb-2 pt-6">
-      <Text className="text-lg font-bold text-foreground">{title}</Text>
+      <View className="flex w-full flex-row items-center justify-between">
+        <Text className="text-lg font-bold text-foreground">{title}</Text>
+
+        <TouchableOpacity
+          className="aspect-square h-6 w-6 items-center justify-center rounded-md bg-destructive p-2"
+          onPress={onRemovePress}
+        >
+          <X size={16} color={NAV_THEME.light.background} />
+        </TouchableOpacity>
+      </View>
+
       <Text className="text-sm font-medium text-muted-foreground">
         {description}
       </Text>
@@ -31,11 +91,11 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         <Badge variant="outline" className="h-8 flex-row gap-x-2 py-0">
           <CalendarClock size={16} color={NAV_THEME.light.text} />
           <Text className="text-base font-semibold text-muted-foreground">
-            {date}
+            {new Date(date).toLocaleDateString()}
           </Text>
         </Badge>
         <Button
-          onPress={() => router.push(`/groups/${id}`)}
+          onPress={onPressAttend}
           className="rounded-xl border-2 border-border"
           size="sm"
         >

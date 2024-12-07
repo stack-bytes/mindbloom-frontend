@@ -10,7 +10,14 @@ import {
   UsersRound,
 } from "lucide-react-native";
 import React from "react";
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { createEvent, fetchAllUserEvents, mapEvent } from "~/actions/event";
 import { fetchGroupById, joinGroup, leaveGroup } from "~/actions/group";
 import { MemberCard } from "~/components/member-card";
 import { SessionCard } from "~/components/session-card";
@@ -20,6 +27,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { NAV_THEME } from "~/lib/constants";
 import { useSessionStore } from "~/lib/useSession";
+import { Event } from "~/types/event";
 import { Group } from "~/types/group";
 
 export default function GroupScreen() {
@@ -28,10 +36,12 @@ export default function GroupScreen() {
     editing?: string;
   }>();
 
+  const [loading, setLoading] = React.useState(true);
   const { user: localUser } = useSessionStore((state) => state);
   const [joined, setJoined] = React.useState(false);
 
   const [group, setGroup] = React.useState<Group | null>(null);
+  const [events, setEvents] = React.useState<Event[] | null>([]);
 
   const pressedMainAction = async () => {
     if (joined) {
@@ -44,6 +54,38 @@ export default function GroupScreen() {
       setJoined(true);
     }
   };
+
+  const pressNewEvent = async () => {
+    console.log("Create new event");
+
+    const response = await createEvent({
+      name: "New Event",
+      description: "New Event Description",
+      location: "New Event Location",
+      time: new Date("now").toISOString(),
+      groupId: groupId,
+      coordinate_x: "32.123",
+      coordinate_y: "32.123",
+    });
+
+    if (!response) {
+      console.log("Failed to create event");
+      return;
+    } else {
+      console.log("Event created successfully", response.eventId);
+    }
+  };
+
+  //Fetch events
+  React.useEffect(() => {
+    (async () => {
+      const response = await mapEvent(groupId);
+      if (!response) {
+        return;
+      }
+      setEvents(response);
+    })();
+  }, [groupId, loading]);
 
   React.useEffect(() => {
     (async () => {
@@ -58,7 +100,7 @@ export default function GroupScreen() {
         setJoined(true);
       }
     })();
-  }, [groupId, joined]);
+  }, [groupId, joined, loading]);
 
   if (!group) return <Text>Loading...</Text>;
 
@@ -183,15 +225,34 @@ export default function GroupScreen() {
 
               {/* Events */}
               <View className="h-fit w-full gap-y-2 rounded-xl border border-border bg-card px-3 py-3">
-                <Text className="text-sm font-bold text-muted-foreground">
-                  UPCOMING SESSIONS
-                </Text>
+                <View className="flex w-full flex-row justify-between">
+                  <Text className="text-sm font-bold text-muted-foreground">
+                    UPCOMING SESSIONS
+                  </Text>
+
+                  <TouchableOpacity
+                    className="flex flex-row items-center gap-x-2"
+                    onPress={pressNewEvent}
+                  >
+                    <Text className="text-sm font-semibold text-muted-foreground">
+                      NEW
+                    </Text>
+                  </TouchableOpacity>
+                </View>
 
                 <View className="flex h-fit w-full flex-col gap-y-4">
-                  <SessionCard />
-                  <SessionCard />
-                  <SessionCard />
-                  <SessionCard />
+                  {!events ||
+                    (events.length === 0 && <Text> No events found!</Text>)}
+
+                  {events?.map((event) => (
+                    <SessionCard
+                      key={event.id}
+                      id={event.id}
+                      date={event.time}
+                      title={event.name}
+                      description={event.description}
+                    />
+                  ))}
                 </View>
               </View>
 
