@@ -17,9 +17,12 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { ENDPOINT } from "~/lib/config";
 import { User } from "~/types/user";
+import { useRouter } from "expo-router";
 
 export default function EditCategoriesScreen() {
   const { user } = useSessionStore();
+
+  const router = useRouter();
 
   const navigation = useNavigation();
 
@@ -239,7 +242,7 @@ export default function EditCategoriesScreen() {
               }
             })();
           }
-          navigation.goBack();
+          router.back();
         }}
         style={{
           backgroundColor: "#F44336", // Red color for the exit button

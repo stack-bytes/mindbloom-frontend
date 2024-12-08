@@ -64,6 +64,7 @@ export default function MapScreen() {
 
       console.log("Fetched map event data", data);
       if (data) {
+        console.log("Setting events", data);
         setEvents(data);
       } else {
         console.warn("WARNING! Couldn't fetch events, using fallback data");
