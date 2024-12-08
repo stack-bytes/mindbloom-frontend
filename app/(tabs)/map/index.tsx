@@ -4,7 +4,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import {
   CircleIcon,
   CirclePlusIcon,
@@ -31,6 +31,9 @@ export default function MapScreen() {
   const mapViewRef = React.useRef<MapView>(null);
   const router = useRouter();
 
+  const navigation = useNavigation();
+  const isFocused = navigation.isFocused();
+
   const { user: localUser } = useSessionStore((state) => state);
 
   const [events, setEvents] = React.useState<Event[]>([]);
@@ -54,11 +57,12 @@ export default function MapScreen() {
   const [selectedEvent, setSelectedEvent] = React.useState<Event | null>(null);
 
   React.useEffect(() => {
+    console.log("Changed focus", isFocused);
     // fetch user events
     const fetchEvents = async () => {
       const data = await fetchAllUserEvents(localUser.userId);
 
-      console.log("Fetched data", data);
+      console.log("Fetched map event data", data);
       if (data) {
         setEvents(data);
       } else {
@@ -68,7 +72,7 @@ export default function MapScreen() {
     };
 
     fetchEvents();
-  }, []);
+  }, [isFocused]);
 
   return (
     <SafeAreaView className="flex h-full w-full">

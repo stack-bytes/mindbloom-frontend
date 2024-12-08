@@ -4,6 +4,7 @@ import { Event, EventRequest, EventResponse } from "~/types/event";
 export const fetchAllUserEvents = async (
   userId: string
 ): Promise<Event[] | null> => {
+  console.log("Entered fetchAllUserEvents");
   const response = await fetch(
     `${ENDPOINT}/event-map-service/user/events?userId=` + userId,
     {
@@ -14,6 +15,7 @@ export const fetchAllUserEvents = async (
     }
   );
 
+  console.log("OK", response);
   if (!response.ok) {
     return null;
   }
@@ -23,9 +25,10 @@ export const fetchAllUserEvents = async (
   return data;
 };
 
-export const createEvent = async (
+export const addNewEvent = async (
   eventRequest: EventRequest
 ): Promise<EventResponse | null> => {
+  //console.log("Entered addNewEvent");
   const response = await fetch(`${ENDPOINT}/event-map-service/create`, {
     method: "POST",
     headers: {
@@ -34,10 +37,13 @@ export const createEvent = async (
     body: JSON.stringify(eventRequest),
   });
 
+  console.log("OK", response);
+
   if (!response.ok) {
     return null;
   }
   const data = await response.json();
+  console.log(data);
   return data;
 };
 
@@ -48,7 +54,7 @@ export const removeUserFromEvent = async (
   const response = await fetch(
     `${ENDPOINT}/event-map-service/remove-user?eventId=` +
       eventId +
-      "?userId=" +
+      "&userId=" +
       userId,
     {
       method: "DELETE",
@@ -114,7 +120,7 @@ export const addUserToEvent = async (
   const response = await fetch(
     `${ENDPOINT}/event-map-service/add-user?eventId=` +
       eventId +
-      "?userId=" +
+      "&userId=" +
       userId,
     {
       method: "PATCH",
@@ -127,8 +133,8 @@ export const addUserToEvent = async (
   if (!response.ok) {
     return null;
   }
-
+  console.log(response);
   const data = await response.json();
-
+  console.log(data);
   return data;
 };

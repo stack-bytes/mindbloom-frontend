@@ -5,13 +5,15 @@ import { NAV_THEME } from "~/lib/constants";
 
 import { BottomTabHeaderProps } from "@react-navigation/bottom-tabs";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
+import { useRouter } from "expo-router";
 //
 type propsType = BottomTabHeaderProps | NativeStackHeaderProps;
 
 export const NavigationHeader = (props: propsType) => {
+  const router = useRouter();
   return (
     <View className="flex-row items-center justify-between bg-primary pt-20">
-      <Button onPress={() => props.navigation.goBack()} variant="ghost">
+      <Button onPress={() => router.back()} variant="ghost">
         <ArrowLeftIcon color={NAV_THEME.light.background} />
       </Button>
       <Text className="text-lg font-semibold text-background">

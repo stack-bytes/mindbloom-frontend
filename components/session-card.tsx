@@ -46,7 +46,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
     };
 
     checkAttends();
-  });
+  }, []);
 
   const onPressAttend = async () => {
     if (attends) {
@@ -55,6 +55,11 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
       if (result) {
         setAttends(false);
+
+        //Refresh the page
+        router.reload();
+        router.reload();
+        router.reload();
       } else {
         console.log("Failed to remove user from event");
       }
@@ -98,8 +103,11 @@ export const SessionCard: React.FC<SessionCardProps> = ({
           onPress={onPressAttend}
           className="rounded-xl border-2 border-border"
           size="sm"
+          variant={attends ? "destructive" : "default"}
         >
-          <Text className="font-semibold text-background">Attend</Text>
+          <Text className="font-semibold text-background">
+            {attends ? "Leave" : "Attend"}{" "}
+          </Text>
         </Button>
       </View>
     </View>

@@ -64,13 +64,7 @@ export default function ScheduleScreen() {
         }}
       >
         <View className="flex-row gap-x-2">
-          <Text className="font-semibold">
-            {new Date(`1970-01-01T${item.hour}Z`).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            })}
-          </Text>
+          <Text className="font-semibold">{item.hour}</Text>
           <Text className="font-semibold">{item.title}</Text>
         </View>
       </TouchableOpacity>
@@ -94,11 +88,12 @@ export default function ScheduleScreen() {
         console.warn("WARNING! No events found, using fallback data");
         eventData = FallbackEvents;
       } else {
+        console.log("FETCHED EVENTS: ", data);
         eventData = data;
       }
 
       setEvents(eventData);
-      console.log("EVENTS: ", FallbackEvents);
+
       //group events by date in map (event.time is a string in iso format)
       const eventsByDate = eventData.reduce(
         (acc: { [date: string]: Event[] }, event) => {

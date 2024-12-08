@@ -184,13 +184,13 @@ export default function GroupsScreen() {
               />
             )}
             renderSectionHeader={({ section }) => (
-              <Text className="text-lg font-bold text-foreground">
+              <Text className="bg-background text-lg font-bold text-foreground">
                 {section.title}
               </Text>
             )}
             onRefresh={() => setLoading(true)}
             refreshing={loading}
-            contentContainerStyle={{ rowGap: 16, paddingBottom: 50 }}
+            contentContainerStyle={{ rowGap: 16, paddingBottom: 200 }}
             style={{}}
           />
         </View>

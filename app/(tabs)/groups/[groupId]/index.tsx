@@ -1,4 +1,4 @@
-import { useLocalSearchParams, usePathname } from "expo-router";
+import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
 import {
   ArrowLeftIcon,
   EllipsisIcon,
@@ -17,7 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { createEvent, fetchAllUserEvents, mapEvent } from "~/actions/event";
+import { addNewEvent, fetchAllUserEvents, mapEvent } from "~/actions/event";
 import { fetchGroupById, joinGroup, leaveGroup } from "~/actions/group";
 import { MemberCard } from "~/components/member-card";
 import { SessionCard } from "~/components/session-card";
@@ -36,6 +36,7 @@ export default function GroupScreen() {
     editing?: string;
   }>();
 
+  const router = useRouter();
   const [loading, setLoading] = React.useState(true);
   const { user: localUser } = useSessionStore((state) => state);
   const [joined, setJoined] = React.useState(false);
@@ -56,24 +57,25 @@ export default function GroupScreen() {
   };
 
   const pressNewEvent = async () => {
-    console.log("Create new event");
-
-    const response = await createEvent({
-      name: "New Event",
-      description: "New Event Description",
-      location: "New Event Location",
-      time: new Date("now").toISOString(),
+    console.log("Pressed new event");
+    addNewEvent({
+      name: "New event name",
+      description: "New event description",
+      location: "Cluj Napoca, CloudFlight",
+      time: new Date(),
       groupId: groupId,
-      coordinate_x: "32.123",
-      coordinate_y: "32.123",
+      coordinate_x: "46.7712",
+      coordinate_y: "23.6236",
+    }).then((response) => {
+      if (!response) {
+        console.log("Failed to create event");
+        return;
+      } else {
+        router.reload();
+        console.log("Event created successfully", response.eventId);
+        setLoading(true);
+      }
     });
-
-    if (!response) {
-      console.log("Failed to create event");
-      return;
-    } else {
-      console.log("Event created successfully", response.eventId);
-    }
   };
 
   //Fetch events
@@ -84,6 +86,7 @@ export default function GroupScreen() {
         return;
       }
       setEvents(response);
+      setLoading(false);
     })();
   }, [groupId, loading]);
 
@@ -99,10 +102,12 @@ export default function GroupScreen() {
       if (response.members.includes(localUser.userId)) {
         setJoined(true);
       }
+
+      setLoading(false);
     })();
   }, [groupId, joined, loading]);
 
-  if (!group) return <Text>Loading...</Text>;
+  if (!group || loading) return <Text>Loading...</Text>;
 
   return (
     <View className="h-full w-full bg-primary">
@@ -232,7 +237,7 @@ export default function GroupScreen() {
 
                   <TouchableOpacity
                     className="flex flex-row items-center gap-x-2"
-                    onPress={pressNewEvent}
+                    onPress={() => pressNewEvent()}
                   >
                     <Text className="text-sm font-semibold text-muted-foreground">
                       NEW

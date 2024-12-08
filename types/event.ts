@@ -13,7 +13,7 @@ export interface Event {
 export interface EventRequest {
   name: string;
   description: string;
-  time: string;
+  time: Date;
   groupId: string;
   location: string;
   coordinate_x: string;
