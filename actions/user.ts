@@ -3,7 +3,9 @@ import { User } from "~/types/user";
 
 export const fetchUserInfo = async (userId: string): Promise<User | null> => {
   console.log("ENtered");
-  const response = await fetch(`${ENDPOINT}/users/?userId=${userId}`);
+  const response = await fetch(
+    `${ENDPOINT}/core-services/users/?userId=${userId}`
+  );
 
   console.log(response);
   if (!response.ok) {
@@ -20,7 +22,7 @@ export const addUserInterests = async (
   interest: Array<string>
 ): Promise<boolean | null> => {
   const response = await fetch(
-    `${ENDPOINT}/users/interests/?userId=${userId}&interest=${interest}`,
+    `${ENDPOINT}/core-services/users/interests/?userId=${userId}&interest=${interest}`,
     {
       method: "POST",
       headers: {
@@ -43,7 +45,7 @@ export const deleteUserInterest = async (
   interest: string
 ): Promise<boolean | null> => {
   const response = await fetch(
-    `${ENDPOINT}/users/interests/?userId=${userId}&interest=${interest}`,
+    `${ENDPOINT}/core-services/users/interests/?userId=${userId}&interest=${interest}`,
     {
       method: "DELETE",
       headers: {

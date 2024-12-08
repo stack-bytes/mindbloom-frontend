@@ -34,7 +34,9 @@ export const createNewGroup = async (
 export const fetchUserGroups = async (
   userId: string
 ): Promise<Group[] | null> => {
-  const response = await fetch(`${ENDPOINT}/groups/user?userId=${userId}`);
+  const response = await fetch(
+    `${ENDPOINT}/core-services/groups/user?userId=${userId}`
+  );
 
   if (!response.ok) {
     return null;
@@ -48,7 +50,9 @@ export const fetchUserGroups = async (
 export const fetchGroupById = async (
   groupId: string
 ): Promise<Group | null> => {
-  const response = await fetch(`${ENDPOINT}/groups?groupId=${groupId}`);
+  const response = await fetch(
+    `${ENDPOINT}/core-services/groups?groupId=${groupId}`
+  );
 
   if (!response.ok) {
     return null;
@@ -64,7 +68,7 @@ export const leaveGroup = async (
   userId: string
 ): Promise<boolean> => {
   const response = await fetch(
-    `${ENDPOINT}/groups/user/remove?groupId=${groupId}&userId=${userId}`,
+    `${ENDPOINT}/core-services/groups/user/remove?groupId=${groupId}&userId=${userId}`,
     {
       method: "DELETE",
     }
@@ -82,7 +86,7 @@ export const joinGroup = async (
   userId: string
 ): Promise<boolean> => {
   const response = await fetch(
-    `${ENDPOINT}/groups/user/add?groupId=${groupId}&userId=${userId}`,
+    `${ENDPOINT}/core-services/groups/user/add?groupId=${groupId}&userId=${userId}`,
     {
       method: "PATCH",
     }
@@ -96,7 +100,7 @@ export const joinGroup = async (
 };
 
 export const fetchAllGroups = async (): Promise<Group[] | null> => {
-  const response = await fetch(`${ENDPOINT}/groups/all`);
+  const response = await fetch(`${ENDPOINT}/core-services/groups/all`);
 
   if (!response.ok) {
     return null;
@@ -115,7 +119,9 @@ export const fetchRecommendedGroups = async (
   const queryString = interests
     .map((interest) => `interests=${interest}`)
     .join("&");
-  const response = await fetch(`${ENDPOINT}/groups/interests?${queryString}`);
+  const response = await fetch(
+    `${ENDPOINT}/core-services/groups/interests?${queryString}`
+  );
 
   if (!response.ok) {
     return null;

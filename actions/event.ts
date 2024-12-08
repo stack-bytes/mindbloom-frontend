@@ -4,12 +4,15 @@ import { Event, EventRequest, EventResponse } from "~/types/event";
 export const fetchAllUserEvents = async (
   userId: string
 ): Promise<Event[] | null> => {
-  const response = await fetch(`${ENDPOINT}/user/events?userId=` + userId, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    `${ENDPOINT}/event-map-service/user/events?userId=` + userId,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   if (!response.ok) {
     return null;
@@ -23,7 +26,7 @@ export const fetchAllUserEvents = async (
 export const createEvent = async (
   eventRequest: EventRequest
 ): Promise<EventResponse | null> => {
-  const response = await fetch(`${ENDPOINT}/create`, {
+  const response = await fetch(`${ENDPOINT}/event-map-service/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,7 +46,10 @@ export const removeUserFromEvent = async (
   userId: string
 ): Promise<boolean | null> => {
   const response = await fetch(
-    `${ENDPOINT}/remove-user?eventId=` + eventId + "?userId=" + userId,
+    `${ENDPOINT}/event-map-service/remove-user?eventId=` +
+      eventId +
+      "?userId=" +
+      userId,
     {
       method: "DELETE",
       headers: {
@@ -62,12 +68,15 @@ export const removeUserFromEvent = async (
 };
 
 export const getFullEvent = async (eventId: string): Promise<Event | null> => {
-  const response = await fetch(`${ENDPOINT}/full-event?eventId=` + eventId, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    `${ENDPOINT}/event-map-service/full-event?eventId=` + eventId,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   if (!response.ok) {
     return null;
@@ -79,12 +88,15 @@ export const getFullEvent = async (eventId: string): Promise<Event | null> => {
 };
 
 export const mapEvent = async (groupId: string): Promise<Event[] | null> => {
-  const response = await fetch(`${ENDPOINT}/map-event?groupId=` + groupId, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    `${ENDPOINT}/event-map-service/map-event?groupId=` + groupId,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   if (!response.ok) {
     return null;
@@ -100,7 +112,10 @@ export const addUserToEvent = async (
   userId: string
 ): Promise<boolean | null> => {
   const response = await fetch(
-    `${ENDPOINT}/add-user?eventId=` + eventId + "?userId=" + userId,
+    `${ENDPOINT}/event-map-service/add-user?eventId=` +
+      eventId +
+      "?userId=" +
+      userId,
     {
       method: "PATCH",
       headers: {
