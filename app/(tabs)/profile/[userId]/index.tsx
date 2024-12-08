@@ -45,18 +45,18 @@ export default function ProfileScreen() {
   React.useEffect(() => {
     // Fetch user data
 
-    console.log(localUser, useId);
+    //console.log(localUser, useId);
     if (userId === localUser.userId) {
       setUser(localUser);
     }
-
+    console.log("intees", localUser.interests);
     // Fetch group data
 
     // Fetch user groups
     fetchUserGroups(userId as string).then((groups) => {
       setUserGroups(groups);
     });
-  }, []);
+  }, [localUser, userId]);
 
   if (!user) return <Text> Loading user... </Text>;
 
@@ -75,7 +75,7 @@ export default function ProfileScreen() {
             <View className="absolute -top-14 z-20 flex w-full items-center justify-center">
               <Avatar
                 alt="Group Icon"
-                className="h-32 w-32 border-4 border-background"
+                className="h-40 w-40 border-4 border-background"
               >
                 <AvatarImage source={{ uri: user.pfpUrl }} />
                 <AvatarFallback>
@@ -84,19 +84,19 @@ export default function ProfileScreen() {
               </Avatar>
             </View>
 
-            <View className="flex flex-col gap-y-6 px-4 pt-16">
+            <View className="flex flex-col gap-y-6 px-4 pt-24">
               {/* Info */}
               <View className="w-full flex-col items-center justify-center gap-y-2">
                 <Text className="text-xl font-semibold text-foreground">
                   {user.name}
                 </Text>
-                <Text className="text-center text-base font-medium text-muted-foreground">
+                <Text className="text-center text-base text-lg font-medium text-muted-foreground">
                   I'm interested in meeting new people and making friends.
                 </Text>
 
                 <View className="flex flex-row items-center justify-center gap-x-1 pt-2">
                   <MapPinIcon color={NAV_THEME.light.text} size={16} />
-                  <Text className="text-base font-medium text-muted-foreground">
+                  <Text className="text-base text-xl font-medium text-muted-foreground">
                     {user.countryCode}
                   </Text>
                 </View>
@@ -107,18 +107,20 @@ export default function ProfileScreen() {
                   className="rounded-lg bg-white px-6 py-3 shadow"
                   onPress={() => router.push("/(tabs)/profile/edit-categories")}
                 >
-                  <Text className="text-lg font-bold text-black">Click Me</Text>
+                  <Text className="text-lg font-bold text-gray-800">
+                    Manage interests
+                  </Text>
                 </TouchableOpacity>
               </View>
 
               {/* Tags */}
-              <View className="h-fit w-full gap-y-2 rounded-xl border border-border bg-card px-3 py-3">
+              <View className="h-fit w-full gap-y-2 rounded-xl border border-border bg-card px-3 py-1">
                 <Text className="text-sm font-bold text-muted-foreground">
                   GROUP CATEGORIES
                 </Text>
                 {/* Interests are now group categories */}
                 <View className="flex w-full flex-row flex-wrap gap-x-2 gap-y-2">
-                  {user.interests.map((interest) => (
+                  {user?.interests.map((interest) => (
                     <Badge
                       key={interest}
                       variant="outline"
