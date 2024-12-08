@@ -63,25 +63,25 @@ export default function HomeScreen() {
       <KeyboardAvoidingView>
         <TouchableWithoutFeedback>
           <ScrollView className="w-full">
-            <View className="flex w-full flex-row items-center justify-between px-4 py-2">
-              <Button size="icon" className="rounded-full bg-slate-300">
-                <Bell color={NAV_THEME.light.text} />
+            <View className="flex w-full flex-row items-center justify-between px-4 py-4">
+              <Button size="icon" className="rounded-full bg-primary">
+                <Bell color={NAV_THEME.light.background} />
               </Button>
               <Text className="items-center text-2xl text-primary">
                 {isTherapist ? "Mode: Therapist" : "Mode: Pacient"}
               </Text>
 
               <View className="flex w-fit flex-row gap-x-4">
-                <Button className="rounded-full bg-slate-300" size="icon">
-                  <CalendarClock color={NAV_THEME.light.text} />
+                <Button className="rounded-full bg-primary" size="icon">
+                  <CalendarClock color={NAV_THEME.light.background} />
                 </Button>
 
                 <Button
-                  className="rounded-full bg-slate-300"
+                  className="rounded-full bg-primary"
                   size="icon"
                   onPress={toggleMode}
                 >
-                  <ArrowDownUp color={NAV_THEME.light.text} />
+                  <ArrowDownUp color={NAV_THEME.light.background} />
                 </Button>
               </View>
             </View>

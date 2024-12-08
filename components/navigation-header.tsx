@@ -12,7 +12,7 @@ type propsType = BottomTabHeaderProps | NativeStackHeaderProps;
 export const NavigationHeader = (props: propsType) => {
   const router = useRouter();
   return (
-    <View className="flex-row items-center justify-between bg-primary pt-20">
+    <View className="flex-row items-center justify-between bg-primary py-2 pt-16">
       <Button
         onPress={() => router.back()}
         variant="ghost"
@@ -22,7 +22,7 @@ export const NavigationHeader = (props: propsType) => {
           <ArrowLeftIcon color={NAV_THEME.light.background} />
         )}
       </Button>
-      <Text className="text-lg font-semibold text-background">
+      <Text className="text-3xl font-medium text-background">
         {typeof props.options.headerTitle === "string"
           ? props.options.headerTitle
           : ""}
