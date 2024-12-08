@@ -56,6 +56,8 @@ export default function MapScreen() {
 
   const [selectedEvent, setSelectedEvent] = React.useState<Event | null>(null);
 
+  const [loading, setLoading] = React.useState<boolean>(true);
+
   React.useEffect(() => {
     console.log("Changed focus", isFocused);
     // fetch user events
@@ -73,7 +75,9 @@ export default function MapScreen() {
     };
 
     fetchEvents();
-  }, [isFocused]);
+
+    setLoading(false);
+  }, [isFocused, loading]);
 
   return (
     <SafeAreaView className="flex h-full w-full">
@@ -120,6 +124,14 @@ export default function MapScreen() {
           className="absolute right-4 top-4 p-4"
         >
           <CirclePlusIcon size={24} color={NAV_THEME.light.background} />
+        </Button>
+
+        <Button
+          size="icon"
+          onPress={() => setLoading(true)}
+          className="absolute right-4 top-16 p-4"
+        >
+          <Clock size={24} color={NAV_THEME.light.background} />
         </Button>
       </MapView>
 

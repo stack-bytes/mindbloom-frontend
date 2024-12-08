@@ -33,9 +33,16 @@ export const fetchUserGroups = async (
   userId: string
 ): Promise<Group[] | null> => {
   const response = await fetch(
-    `${ENDPOINT}/core-services/groups/user?userId=${userId}`
+    `${ENDPOINT}/core-services/groups/user?userId=${userId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
   );
 
+  console.log(response);
   if (!response.ok) {
     return null;
   }

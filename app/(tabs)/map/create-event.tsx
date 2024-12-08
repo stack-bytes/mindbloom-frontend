@@ -13,14 +13,24 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { useSessionStore } from "~/lib/useSession";
 import { Group } from "~/types/group";
+import * as Location from "expo-location";
+
+interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
 export default function CreateEvent() {
   const { user: localUser } = useSessionStore((state) => state);
   const [groups, setGroups] = React.useState<Group[] | null>([]);
-  const titleInputRef = React.useRef<HTMLInputElement>(null);
-  const descriptionInputRef = React.useRef<HTMLInputElement>(null);
-  const locationInputRef = React.useRef<HTMLInputElement>(null);
-  const latitudeInputRef = React.useRef<HTMLInputElement>(null);
-  const longitudeInputRef = React.useRef<HTMLInputElement>(null);
+  const [title, setTitle] = React.useState<string>("");
+  const [description, setDescription] = React.useState<string>("");
+  const [location, setLocation] = React.useState<string>("");
+  const [coordinates, setCoordinates] = React.useState<Coordinates | null>(
+    null
+  );
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const [group, setGroup] = React.useState<Group | null>(null);
   const [groupOption, setGroupOption] = React.useState<Group | null>(null);
   React.useEffect(() => {
     // fetch groups
@@ -34,6 +44,28 @@ export default function CreateEvent() {
       }
     };
     fetchGroups();
+
+    const fetchLocation = async () => {
+      try {
+        // Request permissions
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          setErrorMsg("Permission to access location was denied");
+          return;
+        }
+
+        // Get the current position
+        const currentLocation = await Location.getCurrentPositionAsync({});
+        setCoordinates({
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+        });
+      } catch (error) {
+        setErrorMsg("Failed to fetch location");
+      }
+    };
+
+    fetchLocation();
   }, []);
   return (
     <View className="h-full w-full bg-primary">
@@ -46,6 +78,7 @@ export default function CreateEvent() {
             <Input
               placeholder="Enter the title of the event"
               className="rounded-xl"
+              onChangeText={(text: string) => setTitle(text)}
             />
           </View>
           <View className="w-full">
@@ -55,6 +88,7 @@ export default function CreateEvent() {
             <Input
               placeholder="Enter the description of the event"
               className="rounded-xl"
+              onChangeText={(text: string) => setDescription(text)}
             />
           </View>
           <View className="w-full">
@@ -64,6 +98,7 @@ export default function CreateEvent() {
             <Input
               placeholder="Enter the location of the event"
               className="rounded-xl"
+              onChangeText={(text: string) => setLocation(text)}
             />
           </View>
           <View className="w-full gap-y-2">
@@ -71,8 +106,14 @@ export default function CreateEvent() {
               GPS Coordinates
             </Label>
             <View className="w-full flex-grow flex-row gap-x-4">
-              <Input placeholder="LATITUDE" className="flex-grow rounded-xl" />
-              <Input placeholder="LONGITUDE" className="flex-grow rounded-xl" />
+              <Input
+                placeholder={coordinates?.latitude.toString()}
+                className="flex-grow rounded-xl"
+              />
+              <Input
+                placeholder={coordinates?.longitude.toString()}
+                className="flex-grow rounded-xl"
+              />
             </View>
           </View>
           <View className="w-full gap-y-2">
@@ -100,7 +141,49 @@ export default function CreateEvent() {
               </DropdownMenuContent>
             </DropdownMenu>
           </View>
-          <Button>
+          <Button
+            onPress={() => {
+              (async () => {
+                if (
+                  !title ||
+                  !description ||
+                  !location ||
+                  !coordinates ||
+                  !groupOption
+                ) {
+                  console.error("Missing required fields for event creation");
+                  alert(
+                    "Please fill out all fields before creating the event."
+                  );
+                  return;
+                }
+                try {
+                  const response = await addNewEvent({
+                    name: title,
+                    description,
+                    time: new Date(),
+                    location,
+                    coordinate_x: coordinates.latitude.toString(),
+                    coordinate_y: coordinates.longitude.toString(),
+                    groupId: groupOption?.id,
+                  });
+
+                  if (!response) {
+                    console.error("Failed to create event");
+                    alert("Failed to create event. Please try again later.");
+                    return;
+                  }
+
+                  alert("Event created successfully!");
+                } catch (error) {
+                  console.error("Error creating event:", error);
+                  alert(
+                    "An error occurred while creating the event. Please try again."
+                  );
+                }
+              })();
+            }}
+          >
             <Text className="font-medium text-background">Create Event</Text>
           </Button>
         </View>
