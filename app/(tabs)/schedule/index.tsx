@@ -3,7 +3,7 @@ import {
   BottomSheetModalProvider,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { MapPinIcon, Users } from "lucide-react-native";
 import React from "react";
 import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
@@ -74,6 +74,8 @@ export default function ScheduleScreen() {
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
 
   const router = useRouter();
+  const navigation = useNavigation();
+  const isFocused = navigation.isFocused();
 
   const [events, setEvents] = React.useState<Event[]>([]);
   const [agendaItems, setAgendaItems] = React.useState<agendaItemsProps[]>([]);
@@ -127,7 +129,7 @@ export default function ScheduleScreen() {
     };
 
     fetchEvents();
-  }, []);
+  }, [isFocused]);
 
   const handlePresentModalPress = React.useCallback(() => {
     console.log("Presenting modal");

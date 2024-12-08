@@ -1,4 +1,9 @@
-import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
+import {
+  useLocalSearchParams,
+  useNavigation,
+  usePathname,
+  useRouter,
+} from "expo-router";
 import {
   ArrowLeftIcon,
   EllipsisIcon,
@@ -27,12 +32,15 @@ import { useSessionStore } from "~/lib/useSession";
 import { User } from "~/types/user";
 import { fetchUserGroups } from "~/actions/group";
 import { Group } from "~/types/group";
+import { fetchUserInfo } from "~/actions/user";
 
 export default function ProfileScreen() {
   const { userId } = useLocalSearchParams();
   const path = usePathname();
 
   const router = useRouter();
+  const navigation = useNavigation();
+  const isFocused = navigation.isFocused();
 
   const { user: localUser } = useSessionStore((state) => state);
 
@@ -46,17 +54,16 @@ export default function ProfileScreen() {
     // Fetch user data
 
     //console.log(localUser, useId);
-    if (userId === localUser.userId) {
-      setUser(localUser);
-    }
-    console.log("intees", localUser.interests);
+    fetchUserInfo(userId as string).then((user) => {
+      setUser(user);
+    });
     // Fetch group data
 
     // Fetch user groups
     fetchUserGroups(userId as string).then((groups) => {
       setUserGroups(groups);
     });
-  }, [localUser, userId]);
+  }, [localUser, userId, isFocused]);
 
   if (!user) return <Text> Loading user... </Text>;
 
@@ -75,11 +82,11 @@ export default function ProfileScreen() {
             <View className="absolute -top-14 z-20 flex w-full items-center justify-center">
               <Avatar
                 alt="Group Icon"
-                className="h-40 w-40 border-4 border-background"
+                className="h-36 w-36 border-4 border-background"
               >
                 <AvatarImage source={{ uri: user.pfpUrl }} />
                 <AvatarFallback>
-                  <Text>{user.name[0]}</Text>
+                  <Text className="text-4xl">{user.name[0]}</Text>
                 </AvatarFallback>
               </Avatar>
             </View>
@@ -96,7 +103,7 @@ export default function ProfileScreen() {
 
                 <View className="flex flex-row items-center justify-center gap-x-1 pt-2">
                   <MapPinIcon color={NAV_THEME.light.text} size={16} />
-                  <Text className="text-base text-xl font-medium text-muted-foreground">
+                  <Text className="text-base font-medium text-muted-foreground">
                     {user.countryCode}
                   </Text>
                 </View>
@@ -144,6 +151,7 @@ export default function ProfileScreen() {
                   {userGroups ? (
                     userGroups.map((group) => (
                       <GroupCard
+                        key={group.id}
                         id={group.id}
                         title={group.name}
                         description={group.description}
