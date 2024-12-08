@@ -25,6 +25,7 @@ import { Button } from "~/components/ui/button";
 import { NAV_THEME } from "~/lib/constants";
 import { useSessionStore } from "~/lib/useSession";
 import { User } from "~/types/user";
+import { fetchUserGroups } from "~/actions/group";
 import { Group } from "~/types/group";
 
 export default function ProfileScreen() {
@@ -37,7 +38,7 @@ export default function ProfileScreen() {
 
   const [joined, setJoined] = React.useState(false);
 
-  const [userGroups, setUserGroups] = React.useState<Group>([]);
+  const [userGroups, setUserGroups] = React.useState<Group[] | null>([]);
 
   const [user, setUser] = React.useState<User | null>(null);
 
@@ -50,6 +51,11 @@ export default function ProfileScreen() {
     }
 
     // Fetch group data
+
+    // Fetch user groups
+    fetchUserGroups(userId as string).then((groups) => {
+      setUserGroups(groups);
+    });
   }, []);
 
   if (!user) return <Text> Loading user... </Text>;
@@ -61,10 +67,10 @@ export default function ProfileScreen() {
           className="h-full w-full"
           contentContainerStyle={{
             paddingTop: 70,
-            paddingBottom: 100,
+            paddingBottom: 0,
           }}
         >
-          <View className="flex h-full flex-col gap-y-4 rounded-xl bg-background pb-20 pt-5">
+          <View className="flex h-[100vh] flex-col gap-y-4 rounded-xl bg-background pt-5">
             {/* Group Avatar */}
             <View className="absolute -top-14 z-20 flex w-full items-center justify-center">
               <Avatar
@@ -133,9 +139,19 @@ export default function ProfileScreen() {
                 </Text>
 
                 <View className="flex h-fit w-full flex-col gap-y-4">
-                  {user.groups.map((group) => (
-                    <GroupCard />
-                  ))}
+                  {userGroups ? (
+                    userGroups.map((group) => (
+                      <GroupCard
+                        id={group.id}
+                        title={group.name}
+                        description={group.description}
+                        members={group.members.length}
+                        bestMatch={false}
+                      />
+                    ))
+                  ) : (
+                    <Text> Loading groups... </Text>
+                  )}
                 </View>
               </View>
             </View>

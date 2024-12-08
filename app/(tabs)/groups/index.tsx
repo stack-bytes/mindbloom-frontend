@@ -1,9 +1,16 @@
+import { useFocusEffect } from "expo-router";
 import { FilterIcon, PlusIcon, UsersRound } from "lucide-react-native";
 import React from "react";
-import { FlatList, SafeAreaView, TouchableOpacity, View } from "react-native";
+import {
+  SafeAreaView,
+  SectionList,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   createNewGroup,
   fetchAllGroups,
+  fetchRecommendedGroups,
   fetchUserGroups,
 } from "~/actions/group";
 import { GroupCard } from "~/components/group-card";
@@ -47,6 +54,19 @@ export default function GroupsScreen() {
   const [loading, setLoading] = React.useState(true);
 
   const [groups, setGroups] = React.useState<Group[] | null>(null);
+  const [recommendedGroups, setRecommendedGroups] = React.useState<
+    Group[] | []
+  >([]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Your effect logic here
+      setLoading(true);
+      return () => {
+        // Cleanup logic here
+      };
+    }, [])
+  );
 
   const createGroup = async () => {
     console.log("Creating new group...");
@@ -84,6 +104,20 @@ export default function GroupsScreen() {
       setLoading(false);
 
       console.log("User groups:", data);
+    });
+
+    //fetch recommended groups
+    fetchRecommendedGroups(localUser.interests).then((data) => {
+      if (data) {
+        if (data[0] === null) {
+          return;
+        }
+        setRecommendedGroups(data);
+      }
+
+      setLoading(false);
+
+      console.log("Recommended groups:", data);
     });
   }, [loading]);
 
@@ -128,8 +162,17 @@ export default function GroupsScreen() {
               </TouchableOpacity>
             )
           }
-          <FlatList
-            data={groups}
+          <SectionList
+            sections={[
+              {
+                title: "Recommended",
+                data: recommendedGroups || [],
+              },
+              {
+                title: "All groups",
+                data: groups || [],
+              },
+            ].filter((section) => section.data.length > 0)}
             renderItem={({ item }) => (
               <GroupCard
                 id={item.id}
@@ -137,11 +180,18 @@ export default function GroupsScreen() {
                 description={item.description}
                 members={item.members.length}
                 bestMatch={item.id === "1"}
+                joined={item.members.includes(localUser.userId)}
               />
+            )}
+            renderSectionHeader={({ section }) => (
+              <Text className="text-lg font-bold text-foreground">
+                {section.title}
+              </Text>
             )}
             onRefresh={() => setLoading(true)}
             refreshing={loading}
-            contentContainerStyle={{ rowGap: 16 }}
+            contentContainerStyle={{ rowGap: 16, paddingBottom: 50 }}
+            style={{}}
           />
         </View>
       </SafeAreaView>

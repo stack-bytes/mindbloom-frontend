@@ -1,5 +1,5 @@
 import { ENDPOINT } from "~/lib/config";
-import { Group } from "~/types/group";
+import { Group, Metadata } from "~/types/group";
 
 export const createNewGroup = async (
   userId: string,
@@ -104,5 +104,24 @@ export const fetchAllGroups = async (): Promise<Group[] | null> => {
 
   const data = await response.json();
   console.log("OK All groups:", data);
+  return data;
+};
+
+export const fetchRecommendedGroups = async (
+  interests: Metadata["interests"]
+): Promise<Group[] | null> => {
+  //add interests to the query string
+  //interests=1&interests=2&interests=3
+  const queryString = interests
+    .map((interest) => `interests=${interest}`)
+    .join("&");
+  const response = await fetch(`${ENDPOINT}/groups/interests?${queryString}`);
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  console.log("OK Recommended groups:", data);
   return data;
 };
