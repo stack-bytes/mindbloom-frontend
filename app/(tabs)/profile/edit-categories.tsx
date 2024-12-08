@@ -7,6 +7,7 @@ import {
   Button,
   Alert,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useSessionStore } from "~/lib/useSession";
 import {
@@ -73,8 +74,11 @@ export default function EditCategoriesScreen() {
 
   return (
     <View className="flex-1 items-center justify-center bg-gray-50 px-6">
-      <Text className="mb-6 text-2xl font-semibold text-gray-800">
-        Edit User Interests
+      <Text className="mb-0 text-3xl font-semibold text-gray-800">
+        Edit your interests list!
+      </Text>
+      <Text className="mb-20 items-center text-xl font-normal text-gray-500">
+        Add new interests or remove old ones
       </Text>
 
       {/* Text Input Container */}
@@ -110,12 +114,13 @@ export default function EditCategoriesScreen() {
                 <Text className="flex-1 text-base text-gray-800">{item}</Text>
                 <TouchableOpacity
                   onPress={() => removeInterest(item)}
+                  className="rounded-full"
                   style={{
                     backgroundColor: "#FF6347", // Tomato color for the remove button
-                    borderRadius: 12,
-                    padding: 5,
                     justifyContent: "center",
                     alignItems: "center",
+                    width: 30,
+                    height: 30,
                   }}
                 >
                   <Text className="text-lg font-bold text-white">X</Text>
