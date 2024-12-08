@@ -77,8 +77,8 @@ export default function GroupsScreen() {
       location: "Online",
       coordinate_x: "0",
       coordinate_y: "0",
-      owner: localUser.userId,
-      members: [localUser.userId],
+      owner: undefined,
+      members: [],
       metadata: {
         tags: ["therapy", "group"],
         interests: ["mental health"],
@@ -148,7 +148,7 @@ export default function GroupsScreen() {
               size="icon"
               className="rounded-lg border-2 border-border"
             >
-              <PlusIcon color={NAV_THEME.light.background} />
+              <PlusIcon color={NAV_THEME.light.text} />
             </Button>
           </View>
 
