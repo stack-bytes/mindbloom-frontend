@@ -45,18 +45,18 @@ export default function ProfileScreen() {
   React.useEffect(() => {
     // Fetch user data
 
-    console.log(localUser, useId);
+    //console.log(localUser, useId);
     if (userId === localUser.userId) {
       setUser(localUser);
     }
-
+    console.log("intees", localUser.interests);
     // Fetch group data
 
     // Fetch user groups
     fetchUserGroups(userId as string).then((groups) => {
       setUserGroups(groups);
     });
-  }, []);
+  }, [localUser, userId]);
 
   if (!user) return <Text> Loading user... </Text>;
 
@@ -118,7 +118,7 @@ export default function ProfileScreen() {
                 </Text>
                 {/* Interests are now group categories */}
                 <View className="flex w-full flex-row flex-wrap gap-x-2 gap-y-2">
-                  {user.interests.map((interest) => (
+                  {user?.interests.map((interest) => (
                     <Badge
                       key={interest}
                       variant="outline"

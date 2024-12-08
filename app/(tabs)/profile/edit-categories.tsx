@@ -20,7 +20,7 @@ import { User } from "~/types/user";
 import { useRouter } from "expo-router";
 
 export default function EditCategoriesScreen() {
-  const { user } = useSessionStore();
+  const { user, setUser } = useSessionStore();
 
   const router = useRouter();
 
@@ -242,6 +242,7 @@ export default function EditCategoriesScreen() {
               }
             })();
           }
+          setUser({ ...user, interests: userInterests });
           router.back();
         }}
         style={{
