@@ -138,6 +138,7 @@ export default function HomeScreen() {
                     description={item.description}
                     members={item.members}
                     bestMatch={item.id === "1"}
+                    joined={false}
                   />
                 )}
                 contentContainerStyle={{ rowGap: 16 }}

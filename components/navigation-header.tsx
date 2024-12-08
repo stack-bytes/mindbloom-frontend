@@ -13,8 +13,14 @@ export const NavigationHeader = (props: propsType) => {
   const router = useRouter();
   return (
     <View className="flex-row items-center justify-between bg-primary pt-20">
-      <Button onPress={() => router.back()} variant="ghost">
-        <ArrowLeftIcon color={NAV_THEME.light.background} />
+      <Button
+        onPress={() => router.back()}
+        variant="ghost"
+        disabled={!router.canGoBack()}
+      >
+        {router.canGoBack() && (
+          <ArrowLeftIcon color={NAV_THEME.light.background} />
+        )}
       </Button>
       <Text className="text-lg font-semibold text-background">
         {typeof props.options.headerTitle === "string"

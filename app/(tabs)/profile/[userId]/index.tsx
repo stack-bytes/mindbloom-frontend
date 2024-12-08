@@ -70,7 +70,7 @@ export default function ProfileScreen() {
             paddingBottom: 0,
           }}
         >
-          <View className="flex h-[100vh] flex-col gap-y-4 rounded-xl bg-background pt-5">
+          <View className="flex h-full flex-col gap-y-4 rounded-xl bg-background pt-5">
             {/* Group Avatar */}
             <View className="absolute -top-14 z-20 flex w-full items-center justify-center">
               <Avatar
@@ -147,6 +147,7 @@ export default function ProfileScreen() {
                         description={group.description}
                         members={group.members.length}
                         bestMatch={false}
+                        joined={false}
                       />
                     ))
                   ) : (

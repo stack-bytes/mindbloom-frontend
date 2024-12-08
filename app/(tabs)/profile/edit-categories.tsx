@@ -7,7 +7,6 @@ import {
   Button,
   Alert,
   TouchableOpacity,
-  TouchableWithoutFeedback,
 } from "react-native";
 import { useSessionStore } from "~/lib/useSession";
 import {
@@ -16,15 +15,18 @@ import {
   deleteUserInterest,
 } from "~/actions/user";
 import { useNavigation } from "@react-navigation/native";
+import { ENDPOINT } from "~/lib/config";
+import { User } from "~/types/user";
 
 export default function EditCategoriesScreen() {
   const { user } = useSessionStore();
 
   const navigation = useNavigation();
 
-  const [userInterests, setUserInterests] = React.useState(user.interests);
+  const [userInterests, setUserInterests] = React.useState(Array<string>());
 
-  const defaultInterests: Array<string> = user.interests;
+  const [defaultInterests, setDefaultInterests] =
+    React.useState(Array<string>());
 
   const [newInterest, setNewInterest] = React.useState("");
 
@@ -35,18 +37,41 @@ export default function EditCategoriesScreen() {
     React.useState(Array<string>());
 
   React.useEffect(() => {
-    (async () => {
-      const data = await fetchUserInfo(user.userId);
+    if (user?.userId) {
+      (async () => {
+        try {
+          const response = await fetch(
+            `${ENDPOINT}/core-services/users/?userId=${user.userId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
-      if (data === null) {
-        return;
-      }
+          if (!response.ok) {
+            console.error(
+              "Failed to fetch user data:",
+              response.status,
+              response.statusText
+            );
+            return;
+          }
 
-      const interests = data.interests;
-      setUserInterests(interests);
-      console.log(typeof data);
-    })();
-  }, []);
+          const data: User | null = await response.json();
+          if (data) {
+            setUserInterests(data.interests);
+            setDefaultInterests(data.interests);
+          } else {
+            console.log("No user data returned.");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      })();
+    }
+  }, [user]);
 
   const addInterest = () => {
     if (newInterest.trim() === "") {
@@ -140,35 +165,77 @@ export default function EditCategoriesScreen() {
         onPress={() => {
           if (anotherInterests.length > 0) {
             (async () => {
-              const data = await addUserInterests(
-                user.userId,
-                anotherInterests
+              const url = new URL(`${ENDPOINT}/core-services/users/interests`);
+
+              url.searchParams.append("userId", user.userId);
+              anotherInterests.forEach((interest) =>
+                url.searchParams.append("interest", interest)
               );
 
-              if (data === null) {
-                Alert.alert("Error", "Failed to update user interests.");
-                return;
+              try {
+                const response = await fetch(url.toString(), {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+
+                if (response.ok) {
+                  return true; // Successfully added interests
+                } else if (response.status === 404) {
+                  return false; // User not found
+                } else {
+                  throw new Error(
+                    `Unexpected response: ${response.statusText}`
+                  );
+                }
+              } catch (error) {
+                console.error("Error adding interests:", error);
+                throw error;
               }
             })();
           }
+
           console.log(defaultInterests);
           console.log(userInterests);
 
           const deletedInterests = defaultInterests.filter(
             (item) => !userInterests.includes(item)
           );
+
+          if (deletedInterests.length === 0) {
+            navigation.goBack();
+          }
+
           console.log("Deleted Interests:", deletedInterests);
 
           for (let i = 0; i < deletedInterests.length; i++) {
             (async () => {
-              const data = await deleteUserInterest(
-                user.userId,
-                deletedInterests[i]
-              );
+              const url = new URL(`${ENDPOINT}/core-services/users/interests`);
 
-              if (data === null) {
-                Alert.alert("Error", "Failed to update user interests.");
-                return;
+              url.searchParams.append("userId", user.userId);
+              url.searchParams.append("interest", deletedInterests[i]);
+
+              try {
+                const response = await fetch(url.toString(), {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+
+                if (response.ok) {
+                  return true; // Successfully deleted interests
+                } else if (response.status === 404) {
+                  return false; // User not found
+                } else {
+                  throw new Error(
+                    `Unexpected response: ${response.statusText}`
+                  );
+                }
+              } catch (error) {
+                console.error("Error deleting interests:", error);
+                throw error;
               }
             })();
           }
