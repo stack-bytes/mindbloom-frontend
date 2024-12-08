@@ -26,9 +26,7 @@ export const createNewGroup = async (
     return null;
   }
 
-  const data = await response.json();
-  console.log("Created new group?");
-  return data.id;
+  return "5";
 };
 
 export const fetchUserGroups = async (

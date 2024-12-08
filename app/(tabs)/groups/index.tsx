@@ -75,8 +75,8 @@ export default function GroupsScreen() {
       name: "New therapy group",
       description: "Please enter a description",
       location: "Online",
-      coordinate_x: 0,
-      coordinate_y: 0,
+      coordinate_x: "0",
+      coordinate_y: "0",
       owner: localUser.userId,
       members: [localUser.userId],
       metadata: {

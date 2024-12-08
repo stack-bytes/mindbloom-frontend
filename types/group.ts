@@ -4,8 +4,8 @@ export interface Group {
   name: string;
   description: string;
   location: string;
-  coordinate_x: number;
-  coordinate_y: number;
+  coordinate_x: string;
+  coordinate_y: string;
   owner: string;
   members: string[];
   events: string[];
