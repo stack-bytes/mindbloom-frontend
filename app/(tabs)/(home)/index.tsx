@@ -4,6 +4,7 @@ import {
   Text,
   View,
   KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { Button } from "~/components/ui/button";
 import {
@@ -59,84 +60,92 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView>
-      <ScrollView className="w-full">
-        <View className="flex w-full flex-row items-center justify-between px-4 py-2">
-          <Button size="icon" className="rounded-full bg-slate-300">
-            <Bell color={NAV_THEME.light.text} />
-          </Button>
-          <Text className="items-center text-2xl text-primary">
-            {isTherapist ? "Mode: Therapist" : "Mode: Pacient"}
-          </Text>
+      <KeyboardAvoidingView>
+        <TouchableWithoutFeedback>
+          <ScrollView className="w-full">
+            <View className="flex w-full flex-row items-center justify-between px-4 py-2">
+              <Button size="icon" className="rounded-full bg-slate-300">
+                <Bell color={NAV_THEME.light.text} />
+              </Button>
+              <Text className="items-center text-2xl text-primary">
+                {isTherapist ? "Mode: Therapist" : "Mode: Pacient"}
+              </Text>
 
-          <View className="flex w-fit flex-row gap-x-4">
-            <Button className="rounded-full bg-slate-300" size="icon">
-              <CalendarClock color={NAV_THEME.light.text} />
-            </Button>
+              <View className="flex w-fit flex-row gap-x-4">
+                <Button className="rounded-full bg-slate-300" size="icon">
+                  <CalendarClock color={NAV_THEME.light.text} />
+                </Button>
 
-            <Button
-              className="rounded-full bg-slate-300"
-              size="icon"
-              onPress={toggleMode}
-            >
-              <ArrowDownUp color={NAV_THEME.light.text} />
-            </Button>
-          </View>
-        </View>
+                <Button
+                  className="rounded-full bg-slate-300"
+                  size="icon"
+                  onPress={toggleMode}
+                >
+                  <ArrowDownUp color={NAV_THEME.light.text} />
+                </Button>
+              </View>
+            </View>
 
-        <View className="mt-20 flex-auto items-center justify-center">
-          <Text className="text-5xl">
-            Hello,
-            <Text className="text-primary"> John!</Text>
-          </Text>
-        </View>
-        <View className="mt-5 flex-auto items-center justify-center">
-          <Text className="text-xl text-gray-600">Glad to have you back!</Text>
-        </View>
-        <View className="flex-auto items-center justify-center">
-          <Text className="text-xl text-gray-600">
-            Ready to get back to work?
-          </Text>
-        </View>
+            <View className="mt-20 flex-auto items-center justify-center">
+              <Text className="text-5xl">
+                Hello,
+                <Text className="text-primary"> John!</Text>
+              </Text>
+            </View>
+            <View className="mt-5 flex-auto items-center justify-center">
+              <Text className="text-xl text-gray-600">
+                Glad to have you back!
+              </Text>
+            </View>
+            <View className="flex-auto items-center justify-center">
+              <Text className="text-xl text-gray-600">
+                Ready to get back to work?
+              </Text>
+            </View>
 
-        <View className="ml-5 mr-5 mt-20 border-spacing-2 rounded-3xl border border-gray-300">
-          <Text className="mb-3 mt-3 px-3">Groups:</Text>
-          <FlatList
-            className="mb-3 mt-3 px-3"
-            data={items}
-            renderItem={({ item }) => (
-              <GroupCard
-                id={item.id}
-                title={item.title}
-                description={item.description}
-                members={item.members}
-                bestMatch={item.id === "1"}
+            <View className="ml-5 mr-5 mt-20 border-spacing-2 rounded-3xl border border-gray-300 px-4 py-4">
+              <Text className="mb-3 mt-3 px-3">How are you feeling today?</Text>
+              <Slider
+                style={{ width: "100%", height: 40 }}
+                minimumValue={1}
+                maximumValue={10}
+                minimumTrackTintColor={NAV_THEME.light.primary}
+                maximumTrackTintColor={NAV_THEME.light.text}
+                value={sliderValue}
+                onValueChange={(value) => setSliderValue(value)}
               />
-            )}
-            contentContainerStyle={{ rowGap: 16 }}
-          />
-        </View>
+              <Text className="flex-auto px-4 py-4 text-gray-500">
+                Describe it in a few words:
+              </Text>
+              <View className="flex-auto px-4">
+                <ScrollView>
+                  <KeyboardAvoidingView>
+                    <Input className="h-10" />
+                  </KeyboardAvoidingView>
+                </ScrollView>
+              </View>
+            </View>
 
-        <View className="mb-10 ml-5 mr-5 mt-10 border-spacing-2 rounded-3xl border border-gray-300 px-4 py-4">
-          <Text className="mb-3 mt-3 px-3">How are you feeling today?</Text>
-          <Slider
-            style={{ width: "100%", height: 40 }}
-            minimumValue={1}
-            maximumValue={10}
-            minimumTrackTintColor={NAV_THEME.light.primary}
-            maximumTrackTintColor={NAV_THEME.light.text}
-            value={sliderValue}
-            onValueChange={(value) => setSliderValue(value)}
-          />
-          <Text className="flex-auto px-4 py-4 text-gray-500">
-            Describe it in a few words:
-          </Text>
-          <View className="flex-auto px-4">
-            <KeyboardAvoidingView>
-              <Input className="h-10" />
-            </KeyboardAvoidingView>
-          </View>
-        </View>
-      </ScrollView>
+            <View className="ml-5 mr-5 mt-10 border-spacing-2 rounded-3xl border border-gray-300">
+              <Text className="mb-3 mt-3 px-3">Groups:</Text>
+              <FlatList
+                className="mb-3 mt-3 px-3"
+                data={items}
+                renderItem={({ item }) => (
+                  <GroupCard
+                    id={item.id}
+                    title={item.title}
+                    description={item.description}
+                    members={item.members}
+                    bestMatch={item.id === "1"}
+                  />
+                )}
+                contentContainerStyle={{ rowGap: 16 }}
+              />
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

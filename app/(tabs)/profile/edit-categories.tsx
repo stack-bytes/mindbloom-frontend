@@ -7,6 +7,7 @@ import {
   Button,
   Alert,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useSessionStore } from "~/lib/useSession";
 import {
