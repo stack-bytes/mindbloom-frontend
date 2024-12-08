@@ -5,7 +5,7 @@ export const createNewGroup = async (
   userId: string,
   group: Partial<Group>
 ): Promise<Group["id"] | null> => {
-  const response = await fetch(`${ENDPOINT}/groups`, {
+  const response = await fetch(`${ENDPOINT}/core-services/groups`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
